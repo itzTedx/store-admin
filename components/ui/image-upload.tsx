@@ -34,21 +34,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     return null
   }
 
+  console.log(value)
   return (
     <div>
       <div className='flex items-center gap-4 mb-4'>
         {value.map((url) => (
           <div
             key={url}
-            className='relative w-[200ox] h-[200px] rounded-md overflow-hidden'
+            className='relative w-[200px] h-[200px] rounded-md overflow-hidden'
           >
             <div className='absolute z-10 top-2 right-2'>
-              <Button
-                type='button'
-                onClick={() => onRemove(url)}
-                variant='destructive'
-                size='icon'
-              >
+              <Button type='button' variant='destructive' size='icon'>
                 <Trash className='w-4 h-4' />
               </Button>
             </div>
