@@ -1,17 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { ImagePlus, Trash } from 'lucide-react'
-import Image from 'next/image'
 import { CldUploadWidget } from 'next-cloudinary'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import { ImagePlus, Trash } from 'lucide-react'
 
 interface ImageUploadProps {
   disabled?: boolean
   onChange: (value: string) => void
   onRemove: (value: string) => void
   value: string[]
+  buttonText?: string
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -19,6 +20,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onChange,
   onRemove,
   value,
+  buttonText,
 }) => {
   const [isMounted, setIsMounted] = useState(false)
 
@@ -34,7 +36,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     return null
   }
 
-  console.log(value)
   return (
     <div>
       <div className='flex items-center gap-4 mb-4'>
@@ -44,16 +45,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             className='relative w-[200px] h-[200px] rounded-md overflow-hidden'
           >
             <div className='absolute z-10 top-2 right-2'>
-              <Button type='button' variant='destructive' size='icon'>
+              <Button
+                type='button'
+                onClick={() => onRemove(url)}
+                variant='destructive'
+                size='sm'
+              >
                 <Trash className='w-4 h-4' />
               </Button>
             </div>
-
-            <Image src={url} fill className='object-cover' alt='image' />
+            <Image fill className='object-cover' alt='Image' src={url} />
           </div>
         ))}
       </div>
-      <CldUploadWidget onUpload={onUpload} uploadPreset={'jogguznl'}>
+      <CldUploadWidget onUpload={onUpload} uploadPreset='jogguznl'>
         {({ open }) => {
           const onClick = () => {
             open()
@@ -67,7 +72,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               onClick={onClick}
             >
               <ImagePlus className='w-4 h-4 mr-2' />
-              Upload an Image
+              {buttonText ? buttonText : 'Upload an Image'}
             </Button>
           )
         }}

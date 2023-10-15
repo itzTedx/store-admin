@@ -1,7 +1,8 @@
 import prismadb from '@/lib/prismadb'
-import { BillboardForm } from './component/billboard-form'
 
-const BillboardNewPage = async ({
+import { BillboardForm } from './components/billboard-form'
+
+const BillboardPage = async ({
   params,
 }: {
   params: { billboardId: string }
@@ -13,14 +14,12 @@ const BillboardNewPage = async ({
   })
 
   return (
-    <>
-      <div className='flex-col'>
-        <div className='flex-1 p-8 pt-6 space-y-4'>
-          <BillboardForm initialData={billboard}></BillboardForm>
-        </div>
+    <div className='flex-col'>
+      <div className='flex-1 p-8 pt-6 space-y-4'>
+        <BillboardForm initialData={billboard} />
       </div>
-    </>
+    </div>
   )
 }
 
-export default BillboardNewPage
+export default BillboardPage

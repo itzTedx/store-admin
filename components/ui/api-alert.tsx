@@ -29,6 +29,7 @@ export const ApiAlerts: React.FC<ApiAlertProps> = ({
     navigator.clipboard.writeText(description)
     toast.success('Copied', { position: 'bottom-right' })
   }
+
   return (
     <Alert>
       <Server className='w-4 h-4' />
