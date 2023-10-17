@@ -7,7 +7,7 @@ import { CopyCheck, Edit, MoreHorizontal, Trash2 } from 'lucide-react'
 import axios from 'axios'
 
 import { Button } from '@/components/ui/button'
-import { BillboardColumn } from './columns'
+import { ProductColumn } from './columns'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ import {
 import { AlertModal } from '@/components/modals/alert-modal'
 
 interface CellActionProps {
-  data: BillboardColumn
+  data: ProductColumn
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -37,9 +37,9 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true)
-      await axios.delete(`/api/${params.storeId}/billboards/${data.id}`)
+      await axios.delete(`/api/${params.storeId}/products/${data.id}`)
       router.refresh()
-      toast.success('Billboard deleted.')
+      toast.success('Product deleted.')
     } catch (error: any) {
       toast.error(
         'Make sure you removed all categories using this billboard first.'
@@ -73,7 +73,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/${params.storeId}/billboards/${data.id}`)
+              router.push(`/${params.storeId}/products/${data.id}`)
             }
           >
             <Edit className='w-4 h-4 mr-2' />

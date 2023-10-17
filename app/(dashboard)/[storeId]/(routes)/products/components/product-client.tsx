@@ -8,14 +8,14 @@ import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { DataTable } from '@/components/ui/data-table'
 
-import { BillboardColumn, columns } from './columns'
+import { ProductColumn, columns } from './columns'
 import ApiList from '@/components/ui/api-list'
 
-interface BillboardClientProps {
-  data: BillboardColumn[]
+interface ProductClientProps {
+  data: ProductColumn[]
 }
 
-const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
+const ProductClient: React.FC<ProductClientProps> = ({ data }) => {
   const router = useRouter()
   const params = useParams()
 
@@ -23,25 +23,23 @@ const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
     <>
       <div className='flex items-center justify-between'>
         <Heading
-          title={`Billboards (${data.length})`}
+          title={`Products (${data.length})`}
           description='Manage your billboards'
         />
 
-        <Button
-          onClick={() => router.push(`/${params.storeId}/billboards/new`)}
-        >
+        <Button onClick={() => router.push(`/${params.storeId}/products/new`)}>
           <Plus className='w-4 h-4 mr-2' />
           Add New
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey='label' />
+      <DataTable columns={columns} data={data} searchKey='name' />
       <Separator />
-      <Heading title='API' description='API Calls for Billboards' />
+      <Heading title='API' description='API Calls for Product' />
       <Separator />
-      <ApiList entityName='billboards' entityIdName='billboardsId' />
+      <ApiList entityName='products' entityIdName='productId' />
     </>
   )
 }
 
-export default BillboardClient
+export default ProductClient
