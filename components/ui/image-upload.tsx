@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { CldUploadWidget } from 'next-cloudinary'
-import { useEffect, useState } from 'react'
+import { CldUploadWidget } from "next-cloudinary";
+import { useEffect, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import { ImagePlus, Trash } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ImagePlus, Trash } from "lucide-react";
 
 interface ImageUploadProps {
-  disabled?: boolean
-  onChange: (value: string) => void
-  onRemove: (value: string) => void
-  value: string[]
-  buttonText?: string
+  disabled?: boolean;
+  onChange: (value: string) => void;
+  onRemove: (value: string) => void;
+  value: string[];
+  buttonText?: string;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -22,63 +22,63 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   value,
   buttonText,
 }) => {
-  const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   const onUpload = (result: any) => {
-    onChange(result.info.secure_url)
-  }
+    onChange(result.info.secure_url);
+  };
 
   if (!isMounted) {
-    return null
+    return null;
   }
 
   return (
     <div>
-      <div className='flex items-center gap-4 mb-4'>
+      <div className="grid items-center grid-cols-2 gap-4 mb-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8">
         {value.map((url) => (
           <div
             key={url}
-            className='relative w-[200px] h-[200px] rounded-md overflow-hidden'
+            className="relative w-[200px] h-[200px] rounded-md overflow-hidden"
           >
-            <div className='absolute z-10 top-2 right-2'>
+            <div className="absolute z-10 top-2 right-2">
               <Button
-                type='button'
+                type="button"
                 onClick={() => onRemove(url)}
-                variant='destructive'
-                size='sm'
+                variant="destructive"
+                size="sm"
               >
-                <Trash className='w-4 h-4' />
+                <Trash className="w-4 h-4" />
               </Button>
             </div>
-            <Image fill className='object-cover' alt='Image' src={url} />
+            <Image fill className="object-cover" alt="Image" src={url} />
           </div>
         ))}
       </div>
-      <CldUploadWidget onUpload={onUpload} uploadPreset='jogguznl'>
+      <CldUploadWidget onUpload={onUpload} uploadPreset="jogguznl">
         {({ open }) => {
           const onClick = () => {
-            open()
-          }
+            open();
+          };
 
           return (
             <Button
-              type='button'
+              type="button"
               disabled={disabled}
-              variant='secondary'
+              variant="secondary"
               onClick={onClick}
             >
-              <ImagePlus className='w-4 h-4 mr-2' />
-              {buttonText ? buttonText : 'Upload an Image'}
+              <ImagePlus className="w-4 h-4 mr-2" />
+              {buttonText ? buttonText : "Upload an Image"}
             </Button>
-          )
+          );
         }}
       </CldUploadWidget>
     </div>
-  )
-}
+  );
+};
 
-export default ImageUpload
+export default ImageUpload;
