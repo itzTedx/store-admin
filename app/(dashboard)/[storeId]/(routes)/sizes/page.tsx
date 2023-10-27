@@ -3,6 +3,11 @@ import { format } from "date-fns";
 import prismadb from "@/lib/prismadb";
 import { SizeColumn } from "./components/columns";
 import SizesClient from "./components/client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sizes",
+};
 
 const SizesPage = async ({ params }: { params: { storeId: string } }) => {
   const sizes = await prismadb.size.findMany({

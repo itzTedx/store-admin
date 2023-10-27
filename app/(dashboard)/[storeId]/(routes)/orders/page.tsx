@@ -4,6 +4,11 @@ import prismadb from "@/lib/prismadb";
 import OrderClient from "./components/order-client";
 import { OrderColumn } from "./components/columns";
 import { formatter } from "@/lib/utils";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Orders",
+};
 
 const OrdersPage = async ({ params }: { params: { storeId: string } }) => {
   const orders = await prismadb.order.findMany({

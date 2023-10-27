@@ -3,6 +3,11 @@ import { format } from "date-fns";
 import prismadb from "@/lib/prismadb";
 import ColorsClient from "./components/client";
 import { ColorColumn } from "./components/columns";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Colors",
+};
 
 const ColorsPage = async ({ params }: { params: { storeId: string } }) => {
   const colors = await prismadb.color.findMany({
