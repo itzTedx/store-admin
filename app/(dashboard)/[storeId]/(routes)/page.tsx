@@ -9,7 +9,7 @@ export async function generateMetadata(
   const id = params.storeId;
 
   // fetch data
-  const store = await await prismadb.store.findFirst({
+  const store = await prismadb.store.findFirst({
     where: {
       id: params.storeId,
     },
