@@ -7,7 +7,7 @@ import prismadb from '@/lib/prismadb'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-type, Authorization',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 }
 
 export async function OPTIONS() {
@@ -38,22 +38,14 @@ export async function POST(
     line_items.push({
       quantity: 1,
       price_data: {
-        currency: 'AED',
+        currency: 'USD',
         product_data: {
           name: product.name,
         },
-        unit_amount:
-          product.price.toNumber() * 100 +
-          product.price.toNumber() * 100 * 0.05,
-        tax_behavior: 'exclusive',
+        unit_amount: product.price.toNumber() * 100,
       },
     })
   })
-
-  //   const calculation = await stripe.tax.calculations.create({
-  //     currency: 'AED',
-  //     line_items,
-  //   })
 
   const order = await prismadb.order.create({
     data: {
@@ -75,20 +67,20 @@ export async function POST(
     line_items,
     mode: 'payment',
     billing_address_collection: 'required',
-    phone_number_collection: { enabled: true },
-    success_url: `${process.env.FRONTEND_URL}/cart?success=1`,
-    cancel_url: `${process.env.FRONTEND_URL}/cart?canceled=1`,
-    invoice_creation: {
+    phone_number_collection: {
       enabled: true,
-      invoice_data: {
-        description: 'Test',
-      },
     },
-
+    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+    cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     metadata: {
       orderId: order.id,
     },
   })
 
-  return NextResponse.json({ url: session.url }, { headers: corsHeaders })
+  return NextResponse.json(
+    { url: session.url },
+    {
+      headers: corsHeaders,
+    }
+  )
 }
