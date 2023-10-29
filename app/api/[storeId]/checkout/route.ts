@@ -1,8 +1,11 @@
 import Stripe from "stripe"
 import { NextResponse } from "next/server"
+import cors from "cors"
 
 import { stripe } from "@/lib/stripe"
 import prismadb from "@/lib/prismadb"
+
+const cors = cors()
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,7 +14,7 @@ const corsHeaders = {
 }
 
 export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders })
+  return NextResponse.json({}, { headers: cors })
 }
 
 export async function POST(
