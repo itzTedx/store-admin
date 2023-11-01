@@ -1,17 +1,24 @@
-"use client";
+"use client"
 
-import * as z from "zod";
-import axios from "axios";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { Trash } from "lucide-react";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+import * as z from "zod"
+import axios from "axios"
+import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
+import { Trash } from "lucide-react"
+import {
+  Category,
+  Color,
+  Image,
+  Product,
+  Size,
+  Subcategory,
+} from "@prisma/client"
+import { useParams, useRouter } from "next/navigation"
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -20,20 +27,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
-import { AlertModal } from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
+} from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
+import { Heading } from "@/components/ui/heading"
+import { AlertModal } from "@/components/modals/alert-modal"
+import ImageUpload from "@/components/ui/image-upload"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -41,19 +48,25 @@ const formSchema = z.object({
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
+  subcategory: z.array(
+    z.object({
+      name: z.string(),
+    })
+  ),
+
   sizeId: z.string().min(1),
   colorId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
-});
+})
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type ProductFormValues = z.infer<typeof formSchema>
 
 interface ProductFormProps {
-  initialData: (Product & { images: Image[] }) | null;
-  categories: Category[];
-  sizes: Size[];
-  colors: Color[];
+  initialData: (Product & { images: Image[] }) | null
+  categories: Category[] & { subcategory: Subcategory[] }
+  sizes: Size[]
+  colors: Color[]
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({
@@ -62,17 +75,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   sizes,
   colors,
 }) => {
-  const params = useParams();
-  const router = useRouter();
+  const params = useParams()
+  const router = useRouter()
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
-  const buttonText = initialData ? "Update Image" : "Upload an Image";
+  const title = initialData ? "Edit product" : "Create product"
+  const description = initialData ? "Edit a product." : "Add a new product"
+  const toastMessage = initialData ? "Product updated." : "Product created."
+  const action = initialData ? "Save changes" : "Create"
+  const buttonText = initialData ? "Update Image" : "Upload an Image"
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -84,50 +97,52 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       : {
           name: "",
           images: [],
+          subcategory: [],
           price: 0,
           categoryId: "",
+          description: "",
           sizeId: "",
           colorId: "",
           isFeatured: false,
           isArchived: false,
         },
-  });
+  })
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
-      setLoading(true);
+      setLoading(true)
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/products/${params.productId}`,
           data
-        );
+        )
       } else {
-        await axios.post(`/api/${params.storeId}/products`, data);
+        await axios.post(`/api/${params.storeId}/products`, data)
       }
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-      toast.success(toastMessage);
+      router.refresh()
+      router.push(`/${params.storeId}/products`)
+      toast.success(toastMessage)
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const onDelete = async () => {
     try {
-      setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-      toast.success("Products deleted.");
+      setLoading(true)
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`)
+      router.refresh()
+      router.push(`/${params.storeId}/products`)
+      toast.success("Products deleted.")
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
-      setOpen(false);
+      setLoading(false)
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <>
@@ -268,11 +283,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                           </FormControl>
                           <SelectContent className="">
                             {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                <div className="flex items-center gap-3">
-                                  <p>{category.name}</p>
-                                </div>
-                              </SelectItem>
+                              <>
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <p>{category.name}</p>
+                                  </div>
+                                </SelectItem>
+                              </>
                             ))}
                           </SelectContent>
                         </Select>
@@ -403,5 +423,5 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         </form>
       </Form>
     </>
-  );
-};
+  )
+}

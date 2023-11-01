@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useFieldArray, useForm } from "react-hook-form"
+import * as z from "zod"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -13,24 +13,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import Image from "next/image";
-import { Billboard, Category } from "@prisma/client";
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+} from "@/components/ui/select"
+import toast from "react-hot-toast"
+import { useState } from "react"
+import Image from "next/image"
+import { Billboard, Category } from "@prisma/client"
+import axios from "axios"
+import { useParams, useRouter } from "next/navigation"
 
-const profileFormSchema = z.object({
-  category: z.string().min(2, {
+const categoryFormSchema = z.object({
+  name: z.string().min(2, {
     message: "Category must be at least 2 characters.",
   }),
 
@@ -38,65 +38,65 @@ const profileFormSchema = z.object({
   subcategory: z
     .array(
       z.object({
-        value: z.string(),
+        name: z.string(),
       })
     )
     .optional(),
-});
+})
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type categoryFormValues = z.infer<typeof categoryFormSchema>
 
 interface CategoryFormProps {
-  billboards: Billboard[];
-  initialData: Category | null;
+  billboards: Billboard[]
+  initialData: Category | null
 }
 
 // This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  subcategory: [{ value: "" }, { value: "" }],
-};
+const defaultValues: Partial<categoryFormValues> = {
+  subcategory: [{ name: "" }, { name: "" }],
+}
 
-export default function ProfileForm({
+export default function categoryForm({
   billboards,
   initialData,
 }: CategoryFormProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const router = useRouter();
-  const params = useParams();
+  const router = useRouter()
+  const params = useParams()
 
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useForm<categoryFormValues>({
+    resolver: zodResolver(categoryFormSchema),
     defaultValues,
     mode: "onChange",
-  });
+  })
 
   const { fields, append } = useFieldArray({
     name: "subcategory",
     control: form.control,
-  });
+  })
 
-  async function onSubmit(data: ProfileFormValues) {
-    console.log(data);
+  async function onSubmit(data: categoryFormValues) {
+    console.log(data)
 
     try {
-      setLoading(true);
+      setLoading(true)
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/categories/${params.categoryId}`,
           data
-        );
+        )
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/categories`, data)
       }
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success("Created");
+      router.refresh()
+      router.push(`/${params.storeId}/categories`)
+      toast.success("Created")
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -105,7 +105,7 @@ export default function ProfileForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="p-5 space-y-8">
         <FormField
           control={form.control}
-          name="category"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
@@ -167,7 +167,7 @@ export default function ProfileForm({
             <FormField
               control={form.control}
               key={field.id}
-              name={`subcategory.${index}.value`}
+              name={`subcategory.${index}.name`}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className={cn(index !== 0 && "sr-only")}>
@@ -187,7 +187,7 @@ export default function ProfileForm({
             variant="outline"
             size="sm"
             className="mt-2"
-            onClick={() => append({ value: "" })}
+            onClick={() => append({ name: "" })}
           >
             Add Category
           </Button>
@@ -195,5 +195,5 @@ export default function ProfileForm({
         <Button type="submit">Create</Button>
       </form>
     </Form>
-  );
+  )
 }

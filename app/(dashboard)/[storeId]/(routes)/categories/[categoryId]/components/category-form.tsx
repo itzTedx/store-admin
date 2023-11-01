@@ -1,17 +1,11 @@
-"use client";
+"use client"
 
-import * as z from "zod";
-import axios from "axios";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { Plus, PlusCircle, Trash, X } from "lucide-react";
-import { Billboard, Category } from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useFieldArray, useForm } from "react-hook-form"
+import * as z from "zod"
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -20,114 +14,120 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
-import { AlertModal } from "@/components/modals/alert-modal";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/select";
-import { SelectValue } from "@radix-ui/react-select";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+  SelectValue,
+} from "@/components/ui/select"
+import toast from "react-hot-toast"
+import { useState } from "react"
+import Image from "next/image"
+import { Billboard, Category, Subcategory } from "@prisma/client"
+import axios from "axios"
+import { useParams, useRouter } from "next/navigation"
+import { AlertModal } from "@/components/modals/alert-modal"
+import { Minus, Plus, Trash, X } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { Heading } from "@/components/ui/heading"
 
-const formSchema = z.object({
-  name: z.string().min(1),
+const categoryFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Category must be at least 2 characters.",
+  }),
+
   billboardId: z.string().min(1),
   subcategory: z
     .array(
       z.object({
-        value: z.string(),
+        name: z.string(),
       })
     )
     .optional(),
-});
+})
 
-type CategoryFormValues = z.infer<typeof formSchema>;
+type categoryFormValues = z.infer<typeof categoryFormSchema>
 
 interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+  initialData: Category | null
+  billboards: Billboard[]
 }
 
-export const CategoryForm: React.FC<CategoryFormProps> = ({
-  initialData,
+export default function categoryForm({
   billboards,
-}) => {
-  const params = useParams();
-  const router = useRouter();
+  initialData,
+}: CategoryFormProps) {
+  const router = useRouter()
+  const params = useParams()
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const title = initialData ? "Edit category" : "Create category";
-  const description = initialData ? "Edit a category." : "Add a new category";
-  const toastMessage = initialData ? "category updated." : "category created.";
-  const action = initialData ? "Save changes" : "Create";
+  // This can come from your database or API.
+  const defaultValues: Partial<categoryFormValues> = {
+    subcategory: [{ name: initialData?.name || "" }],
+  }
 
-  const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: "",
-      billboardId: "",
-      subcategory: [
-        {
-          value: "",
-        },
-        {
-          value: "",
-        },
-      ],
-    },
-  });
+  const title = initialData ? "Edit category" : "Create category"
+  const description = initialData ? "Edit a category." : "Add a new category"
+  const toastMessage = initialData ? "Category updated." : "Category created."
+  const action = initialData ? "Save changes" : "Create"
 
-  const { fields, append } = useFieldArray({
+  const form = useForm<categoryFormValues>({
+    resolver: zodResolver(categoryFormSchema),
+    defaultValues: initialData || defaultValues,
+    mode: "onChange",
+  })
+
+  const { fields, append, remove } = useFieldArray({
     name: "subcategory",
     control: form.control,
-  });
+  })
 
-  const onSubmit = async (data: CategoryFormValues) => {
+  async function onSubmit(data: categoryFormValues) {
+    console.log(data)
+
     try {
-      setLoading(true);
+      setLoading(true)
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/categories/${params.categoryId}`,
           data
-        );
+        )
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/categories`, data)
       }
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success(toastMessage);
+      router.refresh()
+      router.push(`/${params.storeId}/categories`)
+      toast.success(toastMessage)
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const onDelete = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       await axios.delete(
         `/api/${params.storeId}/categories/${params.categoryId}`
-      );
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success("Category deleted.");
+      )
+      router.refresh()
+      router.push(`/${params.storeId}/categories`)
+      toast.success("Category deleted.")
     } catch (error: any) {
       toast.error(
         "Make sure you removed all products using this category first."
-      );
+      )
     } finally {
-      setLoading(false);
-      setOpen(false);
+      setLoading(false)
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <>
@@ -151,31 +151,36 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
         )}
       </div>
       <Separator />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8"
-        >
-          <div className="gap-8 md:grid md:grid-cols-3">
-            <div className="col-span-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="Category Name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+      <div className="max-w-xl">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="p-5 space-y-8"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  {/* <FormDescription>
+                    {initialData
+                      ? "Update Existing Category Name"
+                      : "Create New Category Name"}
+                  </FormDescription> */}
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Category name"
+                      {...field}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="billboardId"
@@ -225,16 +230,31 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 <FormField
                   control={form.control}
                   key={field.id}
-                  name={`subcategory`}
+                  name={`subcategory.${index}.name`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className={cn(index !== 0 && "sr-only")}>
-                        Sub Categories
+                        Subcategories
                       </FormLabel>
 
                       <FormControl>
-                        {/* @ts-ignore */}
-                        <Input disabled={loading} {...field} />
+                        <div className="flex">
+                          <Input
+                            {...field}
+                            disabled={loading}
+                            placeholder="New Subcategory"
+                            className={cn("rounded-s-md rounded-e-none")}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className={cn("rounded-s-none rounded-e-md h-auto")}
+                            onClick={() => remove(index)}
+                          >
+                            <X size={16} />
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -246,17 +266,15 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 variant="outline"
                 size="sm"
                 className="mt-2"
-                onClick={() => append({ value: "" })}
+                onClick={() => append({ name: "" })}
               >
-                Add URL
+                <Plus size={16} className="mr-2" /> Add
               </Button>
             </div>
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
+            <Button type="submit">{action}</Button>
+          </form>
+        </Form>
+      </div>
     </>
-  );
-};
+  )
+}

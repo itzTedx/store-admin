@@ -40,35 +40,22 @@ model Billboard {
 }
 
 model Category {
-  id            String        @id @default(uuid())
-  slug          String
-  storeId       String
-  store         Store         @relation("StoreToCategory", fields: [storeId], references: [id])
-  billboardId   String
-  billboard     Billboard     @relation(fields: [billboardId], references: [id])
+  id          String        @id @default(uuid())
+  slug        String
+  storeId     String
+  store       Store         @relation("StoreToCategory", fields: [storeId], references: [id])
+  billboardId String
+  billboard   Billboard     @relation(fields: [billboardId], references: [id])
   // product       Product[]     @relation("CategoryToProduct")
-  name          String
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   // Define a relation to Subcategories
-  subcategories Subcategory[]
+  subcategory Subcategory[] @relation("SubcategoryToCategory")
 
   @@index([storeId])
   @@index([billboardId])
 }
-
-// model Subcategory {
-//   id         String    @id @default(uuid())
-//   productId  String
-//   product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-//   url        String
-//   createdAt  DateTime  @default(now())
-//   updatedAt  DateTime  @updatedAt
-//   category   Category? @relation(fields: [categoryId], references: [id])
-//   categoryId String?
-
-//   @@index([categoryId])
-// }
 
 model Subcategory {
   id   String @id @default(uuid())
@@ -76,7 +63,7 @@ model Subcategory {
 
   // Define a relation to Category
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation("SubcategoryToCategory", fields: [categoryId], references: [id])
 
   // Define a relation to Products
   products Product[]
@@ -126,8 +113,6 @@ model Product {
   isArchived Boolean @default(false)
   images     Image[]
 
-  // categoryId    String
-  // category      Category    @relation("CategoryToProduct", fields: [categoryId], references: [id])
   subcategoryId String
   subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
   sizeId        String
