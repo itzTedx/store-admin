@@ -1,8 +1,6 @@
 import prismadb from "@/lib/prismadb";
 
 import { ProductForm } from "./components/product-form";
-import { Metadata } from "next";
-
 
 const ProductPage = async ({
   params,

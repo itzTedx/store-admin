@@ -7,6 +7,7 @@ import Image from "next/image";
 export type CategoryColumn = {
   id: string;
   name: string;
+  subcategory: string;
   billboardLabel: string;
   createdAt: string;
   billboardImage: string;
@@ -16,6 +17,10 @@ export const columns: ColumnDef<CategoryColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
+  },
+  {
+    accessorKey: "subcategory",
+    header: "Sub Category",
   },
   {
     accessorKey: "billboard",

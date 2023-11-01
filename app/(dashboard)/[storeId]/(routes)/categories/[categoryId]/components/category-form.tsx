@@ -4,9 +4,9 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { PlusCircle, Trash } from "lucide-react";
+import { Plus, PlusCircle, Trash, X } from "lucide-react";
 import { Billboard, Category } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,10 +32,18 @@ import {
 } from "@/components/ui/select";
 import { SelectValue } from "@radix-ui/react-select";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(1),
   billboardId: z.string().min(1),
+  subcategory: z
+    .array(
+      z.object({
+        value: z.string(),
+      })
+    )
+    .optional(),
 });
 
 type CategoryFormValues = z.infer<typeof formSchema>;
@@ -58,14 +67,26 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   const description = initialData ? "Edit a category." : "Add a new category";
   const toastMessage = initialData ? "category updated." : "category created.";
   const action = initialData ? "Save changes" : "Create";
-  const buttonText = initialData ? "Update Image" : "Upload an Image";
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
       billboardId: "",
+      subcategory: [
+        {
+          value: "",
+        },
+        {
+          value: "",
+        },
+      ],
     },
+  });
+
+  const { fields, append } = useFieldArray({
+    name: "subcategory",
+    control: form.control,
   });
 
   const onSubmit = async (data: CategoryFormValues) => {
@@ -136,23 +157,25 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           className="w-full space-y-8"
         >
           <div className="gap-8 md:grid md:grid-cols-3">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Category Name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="col-span-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Category Name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="billboardId"
@@ -197,6 +220,37 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 </FormItem>
               )}
             />
+            <div>
+              {fields.map((field, index) => (
+                <FormField
+                  control={form.control}
+                  key={field.id}
+                  name={`subcategory`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={cn(index !== 0 && "sr-only")}>
+                        Sub Categories
+                      </FormLabel>
+
+                      <FormControl>
+                        {/* @ts-ignore */}
+                        <Input disabled={loading} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => append({ value: "" })}
+              >
+                Add URL
+              </Button>
+            </div>
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

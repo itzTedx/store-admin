@@ -15,7 +15,7 @@ export async function POST(
       name,
       description,
       price,
-      categoryId,
+      subcategoryId,
       sizeId,
       colorId,
       images,
@@ -44,7 +44,7 @@ export async function POST(
       return new NextResponse("Price is required", { status: 400 });
     }
 
-    if (!categoryId) {
+    if (!subcategoryId) {
       return new NextResponse("Category is required", { status: 400 });
     }
 
@@ -73,9 +73,10 @@ export async function POST(
     const products = await prismadb.product.create({
       data: {
         name,
+        slug: name.join("_"),
         description,
         price,
-        categoryId,
+        subcategoryId,
         sizeId,
         colorId,
         isFeatured,
@@ -102,7 +103,7 @@ export async function GET(
 ) {
   try {
     const { searchParams } = new URL(req.url);
-    const categoryId = searchParams.get("categoryId") || undefined;
+    const subcategoryId = searchParams.get("categoryId") || undefined;
     const colorId = searchParams.get("colorId") || undefined;
     const sizeId = searchParams.get("sizeId") || undefined;
     const isFeatured = searchParams.get("isFeatured");
@@ -114,7 +115,7 @@ export async function GET(
     const products = await prismadb.product.findMany({
       where: {
         storeId: params.storeId,
-        categoryId,
+        subcategoryId,
         colorId,
         sizeId,
         isFeatured: isFeatured ? true : undefined,
@@ -122,7 +123,7 @@ export async function GET(
       },
       include: {
         images: true,
-        category: true,
+        subcategory: true,
         size: true,
         color: true,
       },
