@@ -1,31 +1,32 @@
-import { NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs"
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
 
-import prismadb from "@/lib/prismadb"
+import prismadb from "@/lib/prismadb";
+import { formatSlug } from "@/lib/utils";
 
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const { userId } = auth()
-    const body = await req.json()
+    const { userId } = auth();
+    const body = await req.json();
 
-    const { name, billboardId, subcategory } = body
+    const { name, billboardId, subcategory } = body;
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 })
+      return new NextResponse("Unauthenticated", { status: 403 });
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 400 })
+      return new NextResponse("Name is required", { status: 400 });
     }
     if (!billboardId) {
-      return new NextResponse("Billboard is required", { status: 400 })
+      return new NextResponse("Billboard is required", { status: 400 });
     }
 
     if (!params.storeId) {
-      return new NextResponse("StoreId is required", { status: 400 })
+      return new NextResponse("StoreId is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -33,16 +34,13 @@ export async function POST(
         id: params.storeId,
         userId,
       },
-    })
+    });
 
     if (!storeByUserId) {
-      return new NextResponse("Unauthorized", { status: 403 })
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    // Remove special characters and symbols
-    const cleanName = name.replace(/[^\w\s-]/g, "")
-    // Replace spaces with dashes and convert to lowercase
-    const slug = cleanName.replace(/\s+/g, "-").toLowerCase()
+    const slug = formatSlug(name);
 
     const category = await prismadb.category.create({
       data: {
@@ -56,12 +54,12 @@ export async function POST(
           },
         },
       },
-    })
+    });
 
-    return NextResponse.json(category)
+    return NextResponse.json(category);
   } catch (error) {
-    console.log("[CATEGORIES_POST]", error)
-    return new NextResponse("Internal error", { status: 500 })
+    console.log("[CATEGORIES_POST]", error);
+    return new NextResponse("Internal error", { status: 500 });
   }
 }
 
@@ -71,7 +69,7 @@ export async function GET(
 ) {
   try {
     if (!params.storeId) {
-      return new NextResponse("StoreId is required", { status: 400 })
+      return new NextResponse("StoreId is required", { status: 400 });
     }
 
     const categories = await prismadb.category.findMany({
@@ -89,11 +87,11 @@ export async function GET(
       orderBy: {
         createdAt: "asc",
       },
-    })
+    });
 
-    return NextResponse.json(categories)
+    return NextResponse.json(categories);
   } catch (error) {
-    console.log("[CATEGORIES_GET]", error)
-    return new NextResponse("Internal error", { status: 500 })
+    console.log("[CATEGORIES_GET]", error);
+    return new NextResponse("Internal error", { status: 500 });
   }
 }

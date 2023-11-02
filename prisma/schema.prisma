@@ -60,6 +60,7 @@ model Category {
 model Subcategory {
   id   String @id @default(uuid())
   name String
+  slug String
 
   // Define a relation to Category
   categoryId String
