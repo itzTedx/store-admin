@@ -56,7 +56,7 @@ interface CategoryFormProps {
   billboards: Billboard[]
 }
 
-export default function categoryForm({
+export default function CategoryForm({
   billboards,
   initialData,
 }: CategoryFormProps) {
