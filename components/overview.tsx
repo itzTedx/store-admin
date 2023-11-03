@@ -21,7 +21,7 @@ const Overview: React.FC<OverviewProps> = ({ data }) => {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `AED${value}`}
         />
         <Bar dataKey='total' fill='#3498db' radius={[4, 4, 0, 0]} />
       </BarChart>

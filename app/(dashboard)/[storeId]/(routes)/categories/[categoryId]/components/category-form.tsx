@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useFieldArray, useForm } from "react-hook-form"
+import * as z from "zod"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -14,25 +14,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import Image from "next/image";
-import { Billboard, Category, Subcategory } from "@prisma/client";
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
-import { AlertModal } from "@/components/modals/alert-modal";
-import { Minus, Plus, Trash, X } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
+} from "@/components/ui/select"
+import toast from "react-hot-toast"
+import { useState } from "react"
+import Image from "next/image"
+import { Billboard, Category } from "@prisma/client"
+import axios from "axios"
+import { useParams, useRouter } from "next/navigation"
+import { AlertModal } from "@/components/modals/alert-modal"
+import { Plus, Trash, X } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { Heading } from "@/components/ui/heading"
 
 const categoryFormSchema = z.object({
   name: z.string().min(2, {
@@ -47,85 +47,85 @@ const categoryFormSchema = z.object({
       })
     )
     .optional(),
-});
+})
 
-type categoryFormValues = z.infer<typeof categoryFormSchema>;
+type categoryFormValues = z.infer<typeof categoryFormSchema>
 
 interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+  initialData: Category | null
+  billboards: Billboard[]
 }
 
 export default function CategoryForm({
   billboards,
   initialData,
 }: CategoryFormProps) {
-  const router = useRouter();
-  const params = useParams();
+  const router = useRouter()
+  const params = useParams()
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // This can come from your database or API.
   const defaultValues: Partial<categoryFormValues> = {
     subcategory: [{ name: initialData?.name || "" }],
-  };
+  }
 
-  const title = initialData ? "Edit category" : "Create category";
-  const description = initialData ? "Edit a category." : "Add a new category";
-  const toastMessage = initialData ? "Category updated." : "Category created.";
-  const action = initialData ? "Save changes" : "Create";
+  const title = initialData ? "Edit category" : "Create category"
+  const description = initialData ? "Edit a category." : "Add a new category"
+  const toastMessage = initialData ? "Category updated." : "Category created."
+  const action = initialData ? "Save changes" : "Create"
 
   const form = useForm<categoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: initialData || defaultValues,
     mode: "onChange",
-  });
+  })
 
   const { fields, append, remove } = useFieldArray({
     name: "subcategory",
     control: form.control,
-  });
+  })
 
   async function onSubmit(data: categoryFormValues) {
     try {
-      setLoading(true);
+      setLoading(true)
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/categories/${params.categoryId}`,
           data
-        );
+        )
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/categories`, data)
       }
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success(toastMessage);
+      router.refresh()
+      router.push(`/${params.storeId}/categories`)
+      toast.success(toastMessage)
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   const onDelete = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       await axios.delete(
         `/api/${params.storeId}/categories/${params.categoryId}`
-      );
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success("Category deleted.");
+      )
+      router.refresh()
+      router.push(`/${params.storeId}/categories`)
+      toast.success("Category deleted.")
     } catch (error: any) {
       toast.error(
         "Make sure you removed all products using this category first."
-      );
+      )
     } finally {
-      setLoading(false);
-      setOpen(false);
+      setLoading(false)
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <>
@@ -274,5 +274,5 @@ export default function CategoryForm({
         </Form>
       </div>
     </>
-  );
+  )
 }

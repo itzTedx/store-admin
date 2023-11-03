@@ -1,16 +1,12 @@
-import { formatSlug } from "@/lib/utils";
-import { Billboard } from "@prisma/client";
-import React from "react";
+import { formatSlug } from "@/lib/utils"
 
 interface CategoryFormProps {
-  billboards: Billboard[];
+  string: string
 }
 
-const TestFn = ({ billboards }: CategoryFormProps) => {
-  const formated = billboards.map((item) => item.label);
+const TestFn = ({ string }: CategoryFormProps) => {
+  const test = formatSlug(string)
+  return <div>{test}</div>
+}
 
-  const test = formatSlug(`Hello I'm Melwin! - And {im a graphic design 12}`);
-  return <div>{test}</div>;
-};
-
-export default TestFn;
+export default TestFn

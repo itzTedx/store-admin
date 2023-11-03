@@ -1,7 +1,7 @@
-import prismadb from "@/lib/prismadb";
-import ProfileForm from "./_components/category-form";
-import TestFn from "./_components/text-fu";
-import { AccountForm } from "./_components/account-form";
+import prismadb from "@/lib/prismadb"
+import ProfileForm from "./_components/category-form"
+import TestFn from "./_components/text-fu"
+import { AccountForm } from "./_components/account-form"
 
 const TestPage = async ({ params }: { params: { storeId: string } }) => {
   const billboards = await prismadb.billboard.findMany({
@@ -11,7 +11,7 @@ const TestPage = async ({ params }: { params: { storeId: string } }) => {
     orderBy: {
       createdAt: "desc",
     },
-  });
+  })
   const categories = await prismadb.category.findMany({
     include: {
       subcategory: {
@@ -21,25 +21,18 @@ const TestPage = async ({ params }: { params: { storeId: string } }) => {
     orderBy: {
       createdAt: "asc",
     },
-  });
+  })
 
   return (
-    <div className="grid grid-cols-3 py-6">
-      <div>
-        {categories.map((cat) => (
-          <div key={cat.id}>
-            <h5 className="font-bold">{cat.name}</h5>
-            {cat.subcategory.map((sub) => (
-              <div key={sub.name}>{sub.name}</div>
-            ))}
-          </div>
-        ))}
-      </div>
+    <div className="grid py-6 sm:grid-cols-3">
       <AccountForm categories={categories} />
       {/* <ProfileForm billboards={billboards} initialData={null} /> */}
-      <TestFn billboards={billboards} />
+      <div className="px-6">
+        Sluggify Test
+        <TestFn string="hello I'm Mukesh and my email is mukesh@gmail.com" />
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default TestPage;
+export default TestPage
