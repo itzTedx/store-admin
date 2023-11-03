@@ -28,9 +28,10 @@ export default async function DashboardLayout({
     redirect("/");
   }
   return (
-    <div className="flex h-full">
+    <>
       <SideBar />
-      <main className="px-6">{children}</main>
-    </div>
+
+      {children}
+    </>
   );
 }

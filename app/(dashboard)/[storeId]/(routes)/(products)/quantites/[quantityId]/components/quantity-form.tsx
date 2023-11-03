@@ -126,7 +126,7 @@ export const QuantityForm: React.FC<QuantityFormProps> = ({ initialData }) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Color</FormLabel>
+                  <FormLabel>Quantity</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
@@ -148,7 +148,7 @@ export const QuantityForm: React.FC<QuantityFormProps> = ({ initialData }) => {
                     <div className="flex items-center gap-x-4">
                       <Input
                         disabled={loading}
-                        placeholder="Color value"
+                        placeholder="Quantity"
                         {...field}
                       />
                     </div>
