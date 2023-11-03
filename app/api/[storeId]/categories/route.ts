@@ -14,6 +14,12 @@ export async function POST(
 
     const { name, billboardId, subcategory } = body;
 
+    //Passing subcategories with slugs
+    const subcategories = subcategory.map((item: { name: string }) => {
+      const slug = formatSlug(item.name);
+      return { ...item, slug };
+    });
+
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
@@ -40,17 +46,17 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const slug = formatSlug(name);
+    const categorySlug = formatSlug(name);
 
     const category = await prismadb.category.create({
       data: {
         name,
-        slug,
+        slug: categorySlug,
         billboardId,
         storeId: params.storeId,
         subcategory: {
           createMany: {
-            data: [...subcategory.map((item: { name: string }) => item)],
+            data: [...subcategories.map((item: { name: string }) => item)],
           },
         },
       },
