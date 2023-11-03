@@ -21,12 +21,12 @@ const OrderPage = async ({
       id: { in: orders?.orderItems.map((item) => item.productId) },
     },
     include: {
-      color: true,
+      quantity: true,
       size: true,
       subcategory: true,
     },
   })
-  const price = products.map((item) => item.price)
+  const price = products.map((item) => item.discountPrice)
 
   const totalPrice = price.reduce((total, item) => {
     return total + Number(item)
@@ -44,9 +44,9 @@ const OrderPage = async ({
         <div key={product.id}>
           <h2>{product.name}</h2>
           <span>{product.subcategory.name}</span>
-          <span>{product.color.name}</span>
+          <span>{product.quantity.name}</span>
           <span>{product.size.name}</span>
-          <div>{product.price.toString()}</div>
+          <div>{product.discountPrice.toString()}</div>
         </div>
       ))}
       <Currency value={totalPrice} />
