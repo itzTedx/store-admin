@@ -38,6 +38,12 @@ export async function PATCH(
 
     const { name, billboardId, subcategory } = body;
 
+    //Passing subcategories with slugs
+    const subcategories = subcategory.map((item: { name: string }) => {
+      const slug = formatSlug(item.name);
+      return { ...item, slug };
+    });
+
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -87,7 +93,7 @@ export async function PATCH(
       data: {
         subcategory: {
           createMany: {
-            data: [...subcategory.map((item: { name: string }) => item)],
+            data: [...subcategories.map((item: { name: string }) => item)],
           },
         },
       },
