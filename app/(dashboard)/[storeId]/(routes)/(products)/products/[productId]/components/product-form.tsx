@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import * as z from "zod";
-import axios from "axios";
-import { Fragment, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { Info, Trash } from "lucide-react";
+import * as z from "zod"
+import axios from "axios"
+import { Fragment, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
+import { Info, Trash } from "lucide-react"
 import {
   Category,
   Quantity,
@@ -14,11 +14,11 @@ import {
   Product,
   Size,
   Subcategory,
-} from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+} from "@prisma/client"
+import { useParams, useRouter } from "next/navigation"
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -27,26 +27,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
-import { AlertModal } from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
+} from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
+import { Heading } from "@/components/ui/heading"
+import { AlertModal } from "@/components/modals/alert-modal"
+import ImageUpload from "@/components/ui/image-upload"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { SizeModal } from "@/components/modals/size-modal";
+} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@/components/ui/hover-card"
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -63,15 +62,15 @@ const formSchema = z.object({
 
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
-});
+})
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type ProductFormValues = z.infer<typeof formSchema>
 
 interface ProductFormProps {
-  initialData: (Product & { images: Image[] }) | null;
-  categories: Category[];
-  sizes: Size[];
-  quantity: Quantity[];
+  initialData: (Product & { images: Image[] }) | null
+  categories: Category[]
+  sizes: Size[]
+  quantity: Quantity[]
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({
@@ -80,17 +79,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   sizes,
   quantity,
 }) => {
-  const params = useParams();
-  const router = useRouter();
+  const params = useParams()
+  const router = useRouter()
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
-  const buttonText = initialData ? "Update Image" : "Upload an Image";
+  const title = initialData ? "Edit product" : "Create product"
+  const description = initialData ? "Edit a product." : "Add a new product"
+  const toastMessage = initialData ? "Product updated." : "Product created."
+  const action = initialData ? "Save changes" : "Create"
+  const buttonText = initialData ? "Update Image" : "Upload an Image"
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -114,43 +113,43 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           isFeatured: false,
           isArchived: false,
         },
-  });
+  })
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
-      setLoading(true);
+      setLoading(true)
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/products/${params.productId}`,
           data
-        );
+        )
       } else {
-        await axios.post(`/api/${params.storeId}/products`, data);
+        await axios.post(`/api/${params.storeId}/products`, data)
       }
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-      toast.success(toastMessage);
+      router.refresh()
+      router.push(`/${params.storeId}/products`)
+      toast.success(toastMessage)
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const onDelete = async () => {
     try {
-      setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-      toast.success("Products deleted.");
+      setLoading(true)
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`)
+      router.refresh()
+      router.push(`/${params.storeId}/products`)
+      toast.success("Products deleted.")
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong.")
     } finally {
-      setLoading(false);
-      setOpen(false);
+      setLoading(false)
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <>
@@ -392,7 +391,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                           <div
                             className="flex items-center justify-center w-12 h-auto ml-1 border rounded cursor-pointer hover:bg-white/5"
                             onClick={() => {
-                              router.push(`/${params.storeId}/sizes/new`);
+                              router.push(`/${params.storeId}/sizes/new`)
                             }}
                           >
                             +
@@ -503,5 +502,5 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         </form>
       </Form>
     </>
-  );
-};
+  )
+}
