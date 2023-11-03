@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import CellAction from "./cell-action"
-import Image from "next/image"
+import { ColumnDef } from "@tanstack/react-table";
+import CellAction from "./cell-action";
+import Image from "next/image";
 
 export type CategoryColumn = {
-  id: string
-  name: string
-  subcategory: string
-  billboardLabel: string
-  billboardImage: string
-}
+  id: string;
+  name: string;
+  subcategory: string;
+  billboardLabel: string;
+  billboardImage: string;
+};
 
 export const columns: ColumnDef<CategoryColumn>[] = [
   {
@@ -19,7 +19,7 @@ export const columns: ColumnDef<CategoryColumn>[] = [
   },
   {
     accessorKey: "subcategory",
-    header: "Sub Category",
+    header: "Subcategories",
   },
   {
     accessorKey: "billboard",
@@ -45,4 +45,4 @@ export const columns: ColumnDef<CategoryColumn>[] = [
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
   },
-]
+];
