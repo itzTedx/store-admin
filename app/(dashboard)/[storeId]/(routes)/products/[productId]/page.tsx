@@ -35,7 +35,7 @@ const ProductPage = async ({
       storeId: params.storeId,
     },
   });
-  const colors = await prismadb.color.findMany({
+  const colors = await prismadb.quantity.findMany({
     where: {
       storeId: params.storeId,
     },
@@ -48,7 +48,7 @@ const ProductPage = async ({
           initialData={product}
           categories={categories}
           sizes={sizes}
-          colors={colors}
+          quantity={colors}
         />
       </div>
     </div>

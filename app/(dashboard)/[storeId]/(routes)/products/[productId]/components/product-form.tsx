@@ -6,10 +6,10 @@ import { Fragment, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Trash } from "lucide-react";
+import { Info, Trash } from "lucide-react";
 import {
   Category,
-  Color,
+  Quantity,
   Image,
   Product,
   Size,
@@ -41,15 +41,26 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { SizeModal } from "@/components/modals/size-modal";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const formSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
+
   images: z.object({ url: z.string() }).array(),
-  price: z.coerce.number().min(1),
+
+  actualPrice: z.coerce.number().min(1),
+  discountPrice: z.coerce.number().optional(),
   subcategoryId: z.string().min(1),
-  colorId: z.string().min(1),
+  quantityId: z.string().min(1),
   sizeId: z.string().min(1),
+  timeFrame: z.coerce.number().min(1),
+
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
@@ -60,14 +71,14 @@ interface ProductFormProps {
   initialData: (Product & { images: Image[] }) | null;
   categories: Category[];
   sizes: Size[];
-  colors: Color[];
+  quantity: Quantity[];
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
   categories,
   sizes,
-  colors,
+  quantity,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -86,16 +97,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     defaultValues: initialData
       ? {
           ...initialData,
-          price: parseFloat(String(initialData?.price)),
+          actualPrice: parseFloat(String(initialData?.actualPrice)),
+          discountPrice: parseFloat(String(initialData?.actualPrice)),
+          timeFrame: parseFloat(String(initialData?.timeFrame)),
         }
       : {
           name: "",
           images: [],
-          price: 0,
+          actualPrice: 0,
+          discountPrice: 0,
           subcategoryId: "",
           description: "",
           sizeId: "",
-          colorId: "",
+          timeFrame: 1,
+          quantityId: "",
           isFeatured: false,
           isArchived: false,
         },
@@ -145,6 +160,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         onConfirm={onDelete}
         loading={loading}
       />
+
+      {/* <SizeModal
+        isOpen={addOpen}
+        onClose={() => setAddOpen(false)}
+        onConfirm={() => {}}
+        initialData={[]}
+      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -234,13 +256,41 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="price"
+                  name="actualPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Actual Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="9.99AED"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="discountPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex gap-x-2">
+                        Discounted Price
+                        <HoverCard openDelay={100}>
+                          <HoverCardTrigger>
+                            <Info size={16} className="opacity-30" />
+                          </HoverCardTrigger>
+                          <HoverCardContent side="top" className="w-fit">
+                            Optional
+                          </HoverCardContent>
+                        </HoverCard>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -310,30 +360,44 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <FormItem>
                       <FormLabel>Size</FormLabel>
                       <FormControl>
-                        <Select
-                          disabled={loading}
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                defaultValue={field.value}
-                                placeholder="Select size"
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="">
-                            {sizes.map((size) => (
-                              <SelectItem key={size.id} value={size.id}>
-                                <div className="flex items-center gap-3">
-                                  <p>{size.name}</p>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="flex">
+                          <Select
+                            disabled={loading}
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  defaultValue={field.value}
+                                  placeholder="Select size"
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="">
+                              {sizes.map((size) => (
+                                <SelectItem key={size.id} value={size.id}>
+                                  <div className="flex items-center gap-3">
+                                    <p>
+                                      {size.name} {`(`}
+                                      {size.value}
+                                      {`)`}
+                                    </p>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <div
+                            className="flex items-center justify-center w-12 h-auto ml-1 border rounded cursor-pointer hover:bg-white/5"
+                            onClick={() => {
+                              router.push(`/${params.storeId}/sizes/new`);
+                            }}
+                          >
+                            +
+                          </div>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -341,10 +405,28 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 />
                 <FormField
                   control={form.control}
-                  name="colorId"
+                  name="timeFrame"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color</FormLabel>
+                      <FormLabel>Time Frame</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="2 working days"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantityId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantities</FormLabel>
                       <FormControl>
                         <Select
                           disabled={loading}
@@ -361,14 +443,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="">
-                            {colors.map((color) => (
-                              <SelectItem key={color.id} value={color.id}>
+                            {quantity.map((qty) => (
+                              <SelectItem key={qty.id} value={qty.id}>
                                 <div className="flex items-center gap-3">
-                                  <div
-                                    className="w-6 h-6 border rounded-full"
-                                    style={{ backgroundColor: color.value }}
-                                  />
-                                  <p>{color.name}</p>
+                                  <p>{qty.name}</p>
                                 </div>
                               </SelectItem>
                             ))}

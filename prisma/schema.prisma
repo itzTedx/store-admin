@@ -18,7 +18,7 @@ model Store {
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[]  @relation("StoreToCategory")
   size       Size[]      @relation("StoreToSize")
-  color      Color[]     @relation("StoreToColor")
+  qunatity   Quantity[]  @relation("StoreToQuantity")
   product    Product[]   @relation("StoreToProduct")
   order      Order[]     @relation("StoreToOrder")
   createdAt  DateTime    @default(now())
@@ -88,10 +88,10 @@ model Size {
   @@index([storeId])
 }
 
-model Color {
+model Quantity {
   id        String    @id @default(uuid())
   storeId   String
-  store     Store     @relation("StoreToColor", fields: [storeId], references: [id])
+  store     Store     @relation("StoreToQuantity", fields: [storeId], references: [id])
   product   Product[]
   name      String
   value     String
@@ -102,32 +102,35 @@ model Color {
 }
 
 model Product {
-  id          String  @id @default(uuid())
-  slug        String
-  storeId     String
-  store       Store   @relation("StoreToProduct", fields: [storeId], references: [id])
-  name        String
-  description String  @default("")
-  price       Decimal
+  id            String  @id @default(uuid())
+  slug          String
+  storeId       String
+  store         Store   @relation("StoreToProduct", fields: [storeId], references: [id])
+  name          String
+  description   String  @default("")
+  actualPrice   Decimal
+  discountPrice Decimal
+  images        Image[]
 
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)
-  images     Image[]
 
   subcategoryId String
   subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
   sizeId        String
   size          Size        @relation(fields: [sizeId], references: [id])
-  colorId       String
-  color         Color       @relation(fields: [colorId], references: [id])
+  qunatityId    String
+  quantity      Quantity    @relation(fields: [qunatityId], references: [id])
   OrderItem     OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  timeFrame     Decimal
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([subcategoryId])
   @@index([storeId])
   // @@index([categoryId])
-  @@index([colorId])
+  @@index([qunatityId])
   @@index([sizeId])
 }
 

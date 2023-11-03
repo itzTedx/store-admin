@@ -84,9 +84,13 @@ export async function GET(
       },
       include: {
         subcategory: {
+          orderBy: {
+            createdAt: "desc",
+          },
           select: {
             id: true,
             name: true,
+            slug: true,
           },
         },
       },

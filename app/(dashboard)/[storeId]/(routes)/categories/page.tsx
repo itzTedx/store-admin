@@ -14,12 +14,21 @@ const CategoriesPage = async ({ params }: { params: { storeId: string } }) => {
     where: { storeId: params.storeId },
     include: {
       billboard: true,
-      subcategory: true,
+      subcategory: {
+        orderBy: {
+          name: "desc",
+        },
+        select: {
+          name: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
+
+  console.log(categories);
 
   const formattedCategories: CategoryColumn[] = categories.map((item) => ({
     id: item.id,
