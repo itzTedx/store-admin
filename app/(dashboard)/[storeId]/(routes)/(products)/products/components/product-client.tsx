@@ -9,7 +9,6 @@ import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 
 import { ProductColumn, columns } from "./columns";
-import ApiList from "@/components/ui/api-list";
 
 interface ProductClientProps {
   data: ProductColumn[];

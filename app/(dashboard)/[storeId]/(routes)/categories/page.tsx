@@ -20,6 +20,7 @@ const CategoriesPage = async ({ params }: { params: { storeId: string } }) => {
         },
         select: {
           name: true,
+          id: true,
         },
       },
     },
@@ -27,8 +28,6 @@ const CategoriesPage = async ({ params }: { params: { storeId: string } }) => {
       createdAt: "desc",
     },
   });
-
-  console.log(categories);
 
   const formattedCategories: CategoryColumn[] = categories.map((item) => ({
     id: item.id,

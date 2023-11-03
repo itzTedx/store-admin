@@ -60,11 +60,11 @@ export const QuantityForm: React.FC<QuantityFormProps> = ({ initialData }) => {
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/quantites/${params.colorId}`,
+          `/api/${params.storeId}/quantities/${params.colorId}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/quantites`, data);
+        await axios.post(`/api/${params.storeId}/quantities`, data);
       }
       router.refresh();
       router.push(`/${params.storeId}/quantites`);

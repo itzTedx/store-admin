@@ -29,18 +29,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "react-hot-toast";
-import { Subcategory } from "@prisma/client";
 
 const accountFormSchema = z.object({
-  language: z.string({
-    required_error: "Please select a language.",
-  }),
+  categoryId: z.string().optional(),
+  subcategoryId: z.string().optional(),
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 interface CategoryFormProps {
-  categories: Subcategory[];
+  categories: {
+    name: string;
+    id: string;
+    subcategory: {
+      name: string;
+      id: string;
+    }[];
+  }[];
 }
 
 // This can come from your database or API.
@@ -64,10 +69,10 @@ export function AccountForm({ categories }: CategoryFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-8">
         <FormField
           control={form.control}
-          name="language"
+          name="categoryId"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Language</FormLabel>
+              <FormLabel>Category</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -81,9 +86,11 @@ export function AccountForm({ categories }: CategoryFormProps) {
                     >
                       {field.value
                         ? categories.find(
-                            (language) => language.name === field.value
-                          )?.name
-                        : "Select language"}
+                            (category) =>
+                              category.subcategory.find((i) => i.id) ===
+                              field.value
+                          )?.id
+                        : "Select Category"}
                       <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                     </Button>
                   </FormControl>
@@ -91,28 +98,27 @@ export function AccountForm({ categories }: CategoryFormProps) {
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
                     <CommandInput placeholder="Search language..." />
-                    <CommandEmpty>No language found.</CommandEmpty>
-                    <CommandGroup>
-                      {categories.map((category) => (
-                        <CommandItem
-                          value={category.name}
-                          key={category.name}
-                          onSelect={() => {
-                            form.setValue("language", category.name);
-                          }}
-                        >
-                          <CheckIcon
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              category.name === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {category.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
+                    <CommandEmpty>Nothing found.</CommandEmpty>
+
+                    {categories.map((category) => (
+                      <CommandGroup heading={category.name} key={category.id}>
+                        {category.subcategory.map((sub) => (
+                          <CommandItem
+                            key={sub.name}
+                            value={sub.id}
+                            onSelect={() => {
+                              const conlog = form.setValue(
+                                "subcategoryId",
+                                sub.name
+                              );
+                              console.log(conlog);
+                            }}
+                          >
+                            {sub.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    ))}
                   </Command>
                 </PopoverContent>
               </Popover>

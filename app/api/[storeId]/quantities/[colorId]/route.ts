@@ -12,7 +12,7 @@ export async function GET(
       return new NextResponse("Store ID Required", { status: 400 });
     }
 
-    const color = await prismadb.color.findUnique({
+    const color = await prismadb.quantity.findUnique({
       where: {
         id: params.colorId,
       },
@@ -65,7 +65,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const color = await prismadb.color.updateMany({
+    const color = await prismadb.quantity.updateMany({
       where: {
         id: params.colorId,
       },
@@ -108,7 +108,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const color = await prismadb.color.deleteMany({
+    const color = await prismadb.quantity.deleteMany({
       where: {
         id: params.colorId,
       },

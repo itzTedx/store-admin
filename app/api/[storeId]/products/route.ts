@@ -3,6 +3,8 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 import { formatSlug } from "@/lib/utils";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 export async function POST(
   req: Request,
@@ -15,10 +17,12 @@ export async function POST(
     const {
       name,
       description,
-      price,
-      subcategory,
+      actualPrice,
+      discountPrice,
+      subcategoryId,
       sizeId,
-      colorId,
+      quantityId,
+      timeFrame,
       images,
       isFeatured,
       isArchived,
@@ -41,20 +45,16 @@ export async function POST(
       });
     }
 
-    if (!price) {
+    if (!actualPrice) {
       return new NextResponse("Price is required", { status: 400 });
-    }
-
-    if (!subcategory) {
-      return new NextResponse("Category is required", { status: 400 });
     }
 
     if (!sizeId) {
       return new NextResponse("Size is required", { status: 400 });
     }
 
-    if (!colorId) {
-      return new NextResponse("Color is required", { status: 400 });
+    if (!quantityId) {
+      return new NextResponse("Quantity is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -78,11 +78,13 @@ export async function POST(
         name,
         slug,
         description,
-        price,
-        subcategoryId: subcategory,
+        actualPrice,
+        discountPrice,
+        subcategoryId,
         sizeId,
-        colorId,
+        quantityId,
         isFeatured,
+        timeFrame,
         isArchived,
         storeId: params.storeId,
         images: {
@@ -119,7 +121,6 @@ export async function GET(
       where: {
         storeId: params.storeId,
         subcategoryId,
-        colorId,
         sizeId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
@@ -128,7 +129,7 @@ export async function GET(
         images: true,
         subcategory: true,
         size: true,
-        color: true,
+        quantity: true,
       },
       orderBy: {
         createdAt: "desc",

@@ -9,7 +9,7 @@ interface CategoryFormProps {
 const TestFn = ({ billboards }: CategoryFormProps) => {
   const formated = billboards.map((item) => item.label);
 
-  const test = formatSlug(formated[0]);
+  const test = formatSlug(`Hello I'm Melwin! - And {im a graphic design 12}`);
   return <div>{test}</div>;
 };
 

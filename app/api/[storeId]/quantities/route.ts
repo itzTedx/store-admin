@@ -38,7 +38,7 @@ export async function POST(
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
-    const color = await prismadb.color.create({
+    const color = await prismadb.quantity.create({
       data: {
         name,
         value,
@@ -62,7 +62,7 @@ export async function GET(
       return new NextResponse("StoreId is required", { status: 400 });
     }
 
-    const colors = await prismadb.color.findMany({
+    const colors = await prismadb.quantity.findMany({
       where: {
         storeId: params.storeId,
       },

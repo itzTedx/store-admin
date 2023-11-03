@@ -18,7 +18,6 @@ export type ProductColumn = {
   price: string;
   category: string;
   size: string;
-  color: string;
   isFeatured: boolean;
   isArchived: boolean;
   createdAt: string;
@@ -78,31 +77,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
       );
     },
   },
-  {
-    accessorKey: "size",
-    header: "Size",
-  },
-  {
-    accessorKey: "color",
-    header: "Color",
-    cell: ({ row }) => (
-      <div className="mx-3">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div
-                className="w-6 h-6 border rounded-full"
-                style={{ backgroundColor: row.original.color }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{row.original.color}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    ),
-  },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => {

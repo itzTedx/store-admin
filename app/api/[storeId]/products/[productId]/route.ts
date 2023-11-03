@@ -20,7 +20,7 @@ export async function GET(
         images: true,
         subcategory: true,
         size: true,
-        color: true,
+        quantity: true,
       },
     });
 
@@ -43,8 +43,10 @@ export async function PATCH(
     const {
       name,
       description,
-      price,
+      actualPrice,
+      discountPrice,
       subcategory,
+      quantityId,
       sizeId,
       colorId,
       images,
@@ -73,7 +75,7 @@ export async function PATCH(
       });
     }
 
-    if (!price) {
+    if (!actualPrice) {
       return new NextResponse("Price is required", { status: 400 });
     }
 
@@ -111,10 +113,10 @@ export async function PATCH(
       data: {
         name,
         description,
-        price,
+        actualPrice,
         subcategory,
         sizeId,
-        colorId,
+        quantityId,
         images: { deleteMany: {} },
         isFeatured,
         isArchived,
