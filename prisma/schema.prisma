@@ -41,7 +41,7 @@ model Billboard {
 
 model Category {
   id          String    @id @default(uuid())
-  slug        String
+  slug        String    @unique
   storeId     String
   store       Store     @relation("StoreToCategory", fields: [storeId], references: [id])
   billboardId String
