@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
-import { Separator } from "./ui/separator";
-import { ChevronRight, X } from "lucide-react";
+import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useParams, usePathname } from "next/navigation"
+import { Separator } from "./ui/separator"
+import { ChevronRight, X } from "lucide-react"
 
 import {
   Sheet,
@@ -13,25 +13,25 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "./ui/button";
+} from "@/components/ui/sheet"
+import { Button } from "./ui/button"
 
 const SideBar = () => {
-  const pathname = usePathname();
-  const params = useParams();
+  const pathname = usePathname()
+  const params = useParams()
 
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   if (!isMounted) {
     return (
       <Button variant="ghost" className="p-2">
         <ChevronRight />
       </Button>
-    );
+    )
   }
 
   const routes = [
@@ -50,7 +50,7 @@ const SideBar = () => {
       label: "Test",
       active: pathname === `/${params.storeId}/test`,
     },
-  ];
+  ]
 
   return (
     <>
@@ -78,10 +78,9 @@ const SideBar = () => {
           </SheetHeader>
 
           {routes.map((route) => (
-            <div className="w-full py-4 mt-6 space-y-4">
+            <div className="w-full py-4 mt-6 space-y-4" key={route.href}>
               <Link
                 href={route.href}
-                key={route.href}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary  hover:bg-muted-foreground/10 py-4 px-3 rounded-md",
                   route.active
@@ -97,7 +96,7 @@ const SideBar = () => {
         </SheetContent>
       </Sheet>
     </>
-  );
-};
+  )
+}
 
-export default SideBar;
+export default SideBar
