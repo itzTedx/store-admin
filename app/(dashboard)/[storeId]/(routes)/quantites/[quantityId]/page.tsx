@@ -1,27 +1,27 @@
-import prismadb from "@/lib/prismadb"
+import prismadb from "@/lib/prismadb";
 
-import { ColorForm } from "./components/color-form"
+import { QuantityForm } from "./components/quantity-form";
 
 const ColorPage = async ({
   params,
 }: {
-  params: { storeId: string; colorId: string }
+  params: { storeId: string; quantityId: string };
 }) => {
-  const sizes = await prismadb.color.findUnique({
+  const sizes = await prismadb.quantity.findUnique({
     where: {
-      id: params.colorId,
+      id: params.quantityId,
     },
-  })
+  });
 
-  console.log(sizes)
+  console.log(sizes);
 
   return (
     <div className="flex-col">
       <div className="flex-1 p-8 pt-6 space-y-4">
-        <ColorForm initialData={sizes} />
+        <QuantityForm initialData={sizes} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ColorPage
+export default ColorPage;

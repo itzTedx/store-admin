@@ -11,11 +11,11 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColorColumn, columns } from "./columns";
 import ApiList from "@/components/ui/api-list";
 
-interface ColorsClientProps {
+interface QuantityClientProps {
   data: ColorColumn[];
 }
 
-const ColorsClient: React.FC<ColorsClientProps> = ({ data }) => {
+const QuantityClient: React.FC<QuantityClientProps> = ({ data }) => {
   const router = useRouter();
   const params = useParams();
 
@@ -23,23 +23,19 @@ const ColorsClient: React.FC<ColorsClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Colors (${data.length})`}
-          description="Manage your Colors"
+          title={`Quantity (${data.length})`}
+          description="Manage your Quantity"
         />
 
-        <Button onClick={() => router.push(`/${params.storeId}/colors/new`)}>
+        <Button onClick={() => router.push(`/${params.storeId}/quantites/new`)}>
           <Plus className="w-4 h-4 mr-2" />
           Add New
         </Button>
       </div>
       <Separator />
       <DataTable columns={columns} data={data} searchKey="name" />
-      <Separator />
-      <Heading title="API" description="API Calls for Colors" />
-      <Separator />
-      <ApiList entityName="colors" entityIdName="colorId" />
     </>
   );
 };
 
-export default ColorsClient;
+export default QuantityClient;
