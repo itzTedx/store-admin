@@ -63,6 +63,7 @@ export default function CategoryForm({
   initialData,
 }: CategoryFormProps) {
   console.log(initialData);
+
   const router = useRouter();
   const params = useParams();
 
