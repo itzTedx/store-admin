@@ -1,11 +1,11 @@
-import prismadb from "@/lib/prismadb"
+import prismadb from "@/lib/prismadb";
 
-import CategoryForm from "./components/category-form"
+import CategoryForm from "./components/category-form";
 
 const CategoryPage = async ({
   params,
 }: {
-  params: { categoryId: string; storeId: string }
+  params: { categoryId: string; storeId: string };
 }) => {
   const category = await prismadb.category.findUnique({
     where: {
@@ -14,7 +14,7 @@ const CategoryPage = async ({
     include: {
       subcategory: true,
     },
-  })
+  });
 
   const billboards = await prismadb.billboard.findMany({
     where: {
@@ -23,7 +23,7 @@ const CategoryPage = async ({
     orderBy: {
       createdAt: "desc",
     },
-  })
+  });
 
   return (
     <div className="flex-col">
@@ -31,7 +31,7 @@ const CategoryPage = async ({
         <CategoryForm initialData={category} billboards={billboards} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CategoryPage
+export default CategoryPage;

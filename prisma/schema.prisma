@@ -65,8 +65,9 @@ model Subcategory {
   slug String
 
   // Define a relation to Category
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  description String?
 
   // Define a relation to Products
   products Product[]
