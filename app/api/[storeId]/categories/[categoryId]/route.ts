@@ -92,7 +92,11 @@ export async function PATCH(
       data: {
         subcategory: {
           createMany: {
-            data: [...subcategories.map((item: { name: string }) => item)],
+            data: [
+              ...subcategories.map(
+                (item: { name: string; slug: string }) => item
+              ),
+            ],
           },
         },
       },
