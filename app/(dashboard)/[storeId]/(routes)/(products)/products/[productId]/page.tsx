@@ -1,58 +1,58 @@
-import prismadb from "@/lib/prismadb";
+import prismadb from "@/lib/prismadb"
 
-import { ProductForm } from "./components/product-form";
+import { ProductForm } from "./components/product-form"
 
 const ProductPage = async ({
   params,
 }: {
-  params: { productId: string; storeId: string };
+  params: { productId: string; storeId: string }
 }) => {
-  const product = await prismadb.product.findUnique({
+  const products = await prismadb.product.findUnique({
     where: {
       id: params.productId,
     },
     include: {
       images: true,
+      category: true,
     },
-  });
+  })
+
+  console.log(products)
 
   const categories = await prismadb.category.findMany({
-    where: { storeId: params.storeId },
     include: {
       subcategory: {
-        select: {
-          name: true,
-        },
+        select: { name: true, id: true },
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
-  });
+  })
 
   const sizes = await prismadb.size.findMany({
     where: {
       storeId: params.storeId,
     },
-  });
+  })
   const colors = await prismadb.quantity.findMany({
     where: {
       storeId: params.storeId,
     },
-  });
+  })
 
   return (
     <div className="flex-col">
       <div className="flex-1 p-8 pt-6 space-y-4">
         <ProductForm
-          initialData={product}
+          initialData={products}
           categories={categories}
           sizes={sizes}
           quantity={colors}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductPage;
+export default ProductPage

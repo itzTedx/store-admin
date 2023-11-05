@@ -109,18 +109,17 @@ export function AccountForm({ categories }: CategoryFormProps) {
                       {categories.map((category) => (
                         <div key={category.id}>
                           <CommandGroup heading={category.name}>
-                            {category.subcategory &&
-                              category.subcategory.map((sub) => (
-                                <CommandItem
-                                  key={sub.id}
-                                  value={sub.name}
-                                  onSelect={() => {
-                                    form.setValue("subcategoryId", sub.id)
-                                  }}
-                                >
-                                  {sub.name}
-                                </CommandItem>
-                              ))}
+                            {category.subcategory.map((sub) => (
+                              <CommandItem
+                                key={sub.id}
+                                value={sub.name}
+                                onSelect={() => {
+                                  form.setValue("subcategoryId", sub.id)
+                                }}
+                              >
+                                {sub.name}
+                              </CommandItem>
+                            ))}
                           </CommandGroup>
                           {/* {category.subcategory &&
                           category.subcategory.length > 0 ? (

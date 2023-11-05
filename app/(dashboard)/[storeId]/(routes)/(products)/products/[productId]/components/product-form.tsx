@@ -46,16 +46,31 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { ArrowUpDown as CaretSortIcon } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import { cn } from "@/lib/utils"
 
 const formSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-
   images: z.object({ url: z.string() }).array(),
 
   actualPrice: z.coerce.number().min(1),
   discountPrice: z.coerce.number().optional(),
-  subcategoryId: z.string().min(1),
+
+  categoryId: z.string().optional(),
+  subcategoryId: z.string(),
   quantityId: z.string().min(1),
   sizeId: z.string().min(1),
   timeFrame: z.coerce.number().min(1),
@@ -68,7 +83,15 @@ type ProductFormValues = z.infer<typeof formSchema>
 
 interface ProductFormProps {
   initialData: (Product & { images: Image[] }) | null
-  categories: Category[]
+  categories: {
+    name: string
+    id: string
+    subcategory: {
+      name: string
+      id: string
+    }[]
+  }[]
+
   sizes: Size[]
   quantity: Quantity[]
 }
@@ -91,29 +114,56 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const action = initialData ? "Save changes" : "Create"
   const buttonText = initialData ? "Update Image" : "Upload an Image"
 
+  console.log(typeof initialData?.subcategoryId)
+
+  const defaultValues = initialData
+    ? {
+        ...initialData,
+        actualPrice: parseFloat(String(initialData?.actualPrice)),
+        discountPrice: parseFloat(String(initialData?.actualPrice)),
+        timeFrame: parseFloat(String(initialData?.timeFrame)),
+      }
+    : {
+        name: "",
+        images: [],
+        actualPrice: 0,
+        discountPrice: 0,
+        subcategoryId: "",
+        description: "",
+        sizeId: "",
+        timeFrame: 1,
+        quantityId: "",
+        isFeatured: false,
+        isArchived: false,
+      }
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-          actualPrice: parseFloat(String(initialData?.actualPrice)),
-          discountPrice: parseFloat(String(initialData?.actualPrice)),
-          timeFrame: parseFloat(String(initialData?.timeFrame)),
-        }
-      : {
-          name: "",
-          images: [],
-          actualPrice: 0,
-          discountPrice: 0,
-          subcategoryId: "",
-          description: "",
-          sizeId: "",
-          timeFrame: 1,
-          quantityId: "",
-          isFeatured: false,
-          isArchived: false,
-        },
+    defaultValues,
   })
+
+  //  initialData
+  //     ? {
+  //         ...initialData,
+  //         actualPrice: parseFloat(String(initialData?.actualPrice)),
+  //         discountPrice: parseFloat(String(initialData?.actualPrice)),
+  //         timeFrame: parseFloat(String(initialData?.timeFrame)),
+  //       }
+  //     : {
+  //         name: "",
+  //         images: [],
+  //         actualPrice: 0,
+  //         discountPrice: 0,
+  //         subcategoryId: "",
+  //         description: "",
+  //         sizeId: "",
+  //         timeFrame: 1,
+  //         quantityId: "",
+  //         isFeatured: false,
+  //         isArchived: false,
+  //       },
+
+  const subCat = categories.find((c) => c.subcategory)
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
@@ -160,12 +210,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         loading={loading}
       />
 
-      {/* <SizeModal
-        isOpen={addOpen}
-        onClose={() => setAddOpen(false)}
-        onConfirm={() => {}}
-        initialData={[]}
-      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -232,7 +276,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-3 col-span-3 gap-6 ">
+            <div className="grid col-span-3 gap-6 md:grid-cols-3 ">
               <div className="col-span-2">
                 <FormField
                   control={form.control}
@@ -306,6 +350,64 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   control={form.control}
                   name="subcategoryId"
                   render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Category</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-[200px] justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? subCat?.subcategory.find(
+                                    (s) => s.id === field.value
+                                  )?.name
+                                : "Select category"}
+
+                              <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search categories..." />
+                            <CommandEmpty>Nothing found.</CommandEmpty>
+                            <div className="overflow-y-scroll max-h-52">
+                              {categories.map((category) => (
+                                <div key={category.id}>
+                                  <CommandGroup heading={category.name}>
+                                    {category.subcategory.map((sub) => (
+                                      <CommandItem
+                                        key={sub.id}
+                                        value={sub.name}
+                                        onSelect={() => {
+                                          form.setValue("subcategoryId", sub.id)
+                                        }}
+                                      >
+                                        {sub.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </div>
+                              ))}
+                            </div>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* <FormField
+                  control={form.control}
+                  name="subcategoryId"
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <FormControl>
@@ -327,22 +429,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                           <SelectContent className="">
                             {categories.map((category) => (
                               <Fragment key={category.id}>
-                                <SelectItem value={category.id}>
-                                  <div className="flex items-center gap-3">
-                                    <p>{category.name}</p>
-                                  </div>
-                                </SelectItem>
-                                {/* <div className="ml-2 ">
-                                  {category.subcategory.map((cat, i) => (
-                                    <SelectItem
-                                      value={cat.name}
-                                      key={i}
-                                      className="border-l-2"
-                                    >
-                                      <p>{cat.name}</p>
-                                    </SelectItem>
-                                  ))}
-                                </div> */}
+                                {category.subcategory.map((sub) => (
+                                  <SelectItem value={sub.id}>
+                                    <div className="flex items-center gap-3">
+                                      <p>{sub.name}</p>
+                                    </div>
+                                  </SelectItem>
+                                ))}
                               </Fragment>
                             ))}
                           </SelectContent>
@@ -351,7 +444,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
                 <FormField
                   control={form.control}
                   name="sizeId"

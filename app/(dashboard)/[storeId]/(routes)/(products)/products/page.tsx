@@ -1,28 +1,31 @@
-import { format } from "date-fns";
+import { format } from "date-fns"
 
-import prismadb from "@/lib/prismadb";
-import ProductClient from "./components/product-client";
-import { ProductColumn } from "./components/columns";
-import { formatter } from "@/lib/utils";
-import { Metadata } from "next";
+import prismadb from "@/lib/prismadb"
+import ProductClient from "./components/product-client"
+import { ProductColumn } from "./components/columns"
+import { formatter } from "@/lib/utils"
+import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Products",
-};
+}
 
 const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
-  const billboards = await prismadb.product.findMany({
+  const products = await prismadb.product.findMany({
     where: { storeId: params.storeId },
     include: {
       size: true,
       quantity: true,
+      subcategory: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
-  });
+  })
 
-  const formattedProducts: ProductColumn[] = billboards.map((item) => ({
+  console.log(products)
+
+  const formattedProducts: ProductColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
     isFeatured: item.isFeatured,
@@ -32,11 +35,11 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
         ? item.discountPrice.toNumber()
         : item.actualPrice.toNumber()
     ),
-    category: item.subcategoryId,
+    subcategory: item.subcategory?.name,
     size: item.size.name,
     color: item.quantity.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
-  }));
+  }))
 
   return (
     <div className="flex-col">
@@ -44,7 +47,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
         <ProductClient data={formattedProducts} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductsPage;
+export default ProductsPage

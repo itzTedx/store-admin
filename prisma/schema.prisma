@@ -52,7 +52,7 @@ model Category {
   updatedAt   DateTime  @updatedAt
   // Define a relation to Subcategories
 
-  subcategory Subcategory[]
+  subcategory Subcategory[] @relation("SubCategoryToCategory")
   Product     Product[]
 
   @@index([storeId])
@@ -66,7 +66,7 @@ model Subcategory {
 
   // Define a relation to Category
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category @relation("SubCategoryToCategory", fields: [categoryId], references: [id])
   description String?
 
   // Define a relation to Products
@@ -119,13 +119,13 @@ model Product {
   isArchived Boolean @default(false)
 
   categoryId    String?
-  category      Category?   @relation(fields: [categoryId], references: [id])
-  subcategoryId String
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
   sizeId        String
-  size          Size        @relation(fields: [sizeId], references: [id])
+  size          Size         @relation(fields: [sizeId], references: [id])
   quantityId    String
-  quantity      Quantity    @relation(fields: [quantityId], references: [id])
+  quantity      Quantity     @relation(fields: [quantityId], references: [id])
   OrderItem     OrderItem[]
   timeFrame     Decimal
 

@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation"
 
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
-  const pathname = usePathname();
-  const params = useParams();
+  const pathname = usePathname()
+  const params = useParams()
 
   const routes = [
     {
@@ -39,9 +39,9 @@ export function MainNav({
       active: pathname === `/${params.storeId}/orders`,
     },
     {
-      href: `/${params.storeId}/blog`,
-      label: "Orders",
-      active: pathname === `/${params.storeId}/orders`,
+      href: `/${params.storeId}/blogs`,
+      label: "Blogs",
+      active: pathname === `/${params.storeId}/blogs`,
     },
     {
       href: `/${params.storeId}/settings`,
@@ -53,7 +53,7 @@ export function MainNav({
       label: "Test",
       active: pathname === `/${params.storeId}/test`,
     },
-  ];
+  ]
 
   return (
     <nav className={cn("flex items-center space-x-3 lg:space-x-6 ", className)}>
@@ -72,5 +72,5 @@ export function MainNav({
         </Link>
       ))}
     </nav>
-  );
+  )
 }
