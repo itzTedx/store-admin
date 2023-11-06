@@ -43,7 +43,7 @@ const OrderPage = async ({
       {products.map((product) => (
         <div key={product.id}>
           <h2>{product.name}</h2>
-          <span>{product.subcategory.name}</span>
+          <span>{product.subcategory?.name}</span>
           <span>{product.quantity.name}</span>
           <span>{product.size.name}</span>
           <div>{product.discountPrice.toString()}</div>
