@@ -139,6 +139,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
+    //@ts-ignore
     defaultValues,
   })
 
