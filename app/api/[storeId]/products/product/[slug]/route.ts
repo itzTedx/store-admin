@@ -1,21 +1,23 @@
-import prismadb from "@/lib/prismadb"
+import { auth } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
+
+import prismadb from "@/lib/prismadb"
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string; id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     if (!params.slug) {
-      return new NextResponse("Slug Required", { status: 400 })
+      return new NextResponse("Store ID Required", { status: 400 })
     }
 
-    const category = await prismadb.category.findUnique({
+    const product = await prismadb.product.findUnique({
       where: {
         slug: params.slug,
       },
       include: {
-        billboard: true,
+        images: true,
         subcategory: {
           include: {
             products: {
@@ -25,11 +27,14 @@ export async function GET(
             },
           },
         },
+        size: true,
+        quantity: true,
       },
     })
-    return NextResponse.json(category)
+
+    return NextResponse.json(product)
   } catch (error) {
-    console.log("[CATEGORY_GET]", error)
+    console.log("[PRODUCT_GET]", error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

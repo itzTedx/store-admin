@@ -1,16 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
 
-import prismadb from "@/lib/prismadb";
+import prismadb from "@/lib/prismadb"
 
 export async function GET(
   req: Request,
   { params }: { params: { subcategoryId: string } }
 ) {
-  console.log(params);
+  console.log(params)
 
   try {
     if (!params.subcategoryId) {
-      return new NextResponse("Item Required", { status: 404 });
+      return new NextResponse("Item Required", { status: 404 })
     }
 
     const product = await prismadb.product.findMany({
@@ -18,16 +18,24 @@ export async function GET(
         subcategoryId: params.subcategoryId,
       },
       include: {
-        subcategory: true,
+        subcategory: {
+          include: {
+            products: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
         size: true,
         quantity: true,
         images: true,
       },
-    });
+    })
 
-    return NextResponse.json(product);
+    return NextResponse.json(product)
   } catch (error) {
-    console.log("[PRODUCT_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.log("[PRODUCT_GET]", error)
+    return new NextResponse("Internal Error", { status: 500 })
   }
 }

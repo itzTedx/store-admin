@@ -88,14 +88,12 @@ export async function GET(
       },
       include: {
         subcategory: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            slug: true,
+          include: {
+            products: {
+              include: {
+                images: true,
+              },
+            },
           },
         },
       },
