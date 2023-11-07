@@ -15,7 +15,7 @@ interface OrderClientProps {
 }
 
 const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
-  console.log(data);
+
 
   return (
     <>

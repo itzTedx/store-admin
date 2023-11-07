@@ -106,7 +106,7 @@ model Quantity {
 
 model Product {
   id            String  @id @default(uuid())
-  slug          String
+  slug          String  @unique
   storeId       String
   store         Store   @relation("StoreToProduct", fields: [storeId], references: [id])
   name          String

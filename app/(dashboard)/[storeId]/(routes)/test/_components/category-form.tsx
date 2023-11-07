@@ -78,7 +78,7 @@ export default function CategoryForm({
   });
 
   async function onSubmit(data: categoryFormValues) {
-    console.log(data);
+
 
     try {
       setLoading(true);

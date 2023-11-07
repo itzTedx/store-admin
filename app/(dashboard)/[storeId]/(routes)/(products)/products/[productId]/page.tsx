@@ -17,7 +17,7 @@ const ProductPage = async ({
     },
   })
 
-  console.log(products)
+
 
   const categories = await prismadb.category.findMany({
     include: {

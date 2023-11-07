@@ -114,7 +114,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const action = initialData ? "Save changes" : "Create"
   const buttonText = initialData ? "Update Image" : "Upload an Image"
 
-  console.log(typeof initialData?.subcategoryId)
+
 
   const defaultValues = initialData
     ? {
