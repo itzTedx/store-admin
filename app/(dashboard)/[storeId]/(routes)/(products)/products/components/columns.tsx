@@ -1,22 +1,24 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { CheckCircle, ArrowUpDown, X } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table";
+import { CheckCircle, ArrowUpDown, X } from "lucide-react";
 
-import CellAction from "./cell-action"
+import CellAction from "./cell-action";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export type ProductColumn = {
-  id: string
-  name: string
-  price: string
-  subcategory?: string
-  size: string
-  isFeatured: boolean
-  isArchived: boolean
-  createdAt: string
-}
+  id: string;
+  name: string;
+  price: string;
+  subcategory?: string;
+  image: string;
+  size: string;
+  isFeatured: boolean;
+  isArchived: boolean;
+  createdAt: string;
+};
 
 export const columns: ColumnDef<ProductColumn>[] = [
   {
@@ -30,9 +32,22 @@ export const columns: ColumnDef<ProductColumn>[] = [
           Name
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => <h5 className="font-semibold">{row.original.name}</h5>,
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => (
+      <Image
+        src={row.original.image}
+        height={42}
+        width={48}
+        alt="image"
+        className="rounded"
+      />
+    ),
   },
   {
     accessorKey: "isFeatured",
@@ -69,7 +84,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
           Category
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
-      )
+      );
     },
   },
 
@@ -84,11 +99,11 @@ export const columns: ColumnDef<ProductColumn>[] = [
           Name
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
-      )
+      );
     },
   },
   {
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
   },
-]
+];
