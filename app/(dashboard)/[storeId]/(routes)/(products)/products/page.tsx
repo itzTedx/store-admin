@@ -24,22 +24,27 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     },
   });
 
-  const formattedProducts: ProductColumn[] = products.map((item) => ({
-    id: item.id,
-    name: item.name,
-    isFeatured: item.isFeatured,
-    isArchived: item.isArchived,
-    price: formatter.format(
-      item.discountPrice
-        ? item.discountPrice.toNumber()
-        : item.actualPrice.toNumber()
-    ),
-    subcategory: item.subcategory?.name,
-    image: item.images[0].url,
-    size: item.size.name,
-    color: item.quantity.value,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
-  }));
+  //  item.discountPrice
+  //    ? item.discountPrice.toNumber()
+  //    : item.actualPrice.toNumber();
+
+  const formattedProducts: ProductColumn[] = products.map((item) => {
+    const discountPrice = item.discountPrice.toNumber();
+
+    const price = discountPrice === 0 ? item.actualPrice : item.discountPrice;
+    return {
+      id: item.id,
+      name: item.name,
+      isFeatured: item.isFeatured,
+      isArchived: item.isArchived,
+      price: formatter.format(price.toNumber()),
+      subcategory: item.subcategory?.name,
+      image: item.images[0].url,
+      size: item.size.name,
+      color: item.quantity.value,
+      createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    };
+  });
 
   return (
     <div className="flex-col">

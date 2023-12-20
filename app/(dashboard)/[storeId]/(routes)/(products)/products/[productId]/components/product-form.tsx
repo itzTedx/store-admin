@@ -118,7 +118,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     ? {
         ...initialData,
         actualPrice: parseFloat(String(initialData?.actualPrice)),
-        discountPrice: parseFloat(String(initialData?.actualPrice)),
+        discountPrice: parseFloat(String(initialData?.discountPrice)),
         timeFrame: parseFloat(String(initialData?.timeFrame)),
       }
     : {

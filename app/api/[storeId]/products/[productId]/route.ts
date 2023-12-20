@@ -57,10 +57,6 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
-    }
-
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
@@ -109,7 +105,7 @@ export async function PATCH(
         name,
         description,
         actualPrice,
-        discountPrice,
+        discountPrice: discountPrice === 0 ? null : discountPrice,
         subcategoryId,
         sizeId,
         quantityId,
