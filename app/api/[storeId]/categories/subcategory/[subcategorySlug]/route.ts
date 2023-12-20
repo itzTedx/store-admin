@@ -16,7 +16,13 @@ export async function GET(
       },
       include: {
         products: {
-          include: { images: true },
+          include: {
+            images: true,
+            category: true,
+            subcategory: true,
+            quantity: true,
+            size: true,
+          },
         },
       },
     });
