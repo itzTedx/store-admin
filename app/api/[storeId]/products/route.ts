@@ -107,7 +107,6 @@ export async function GET(
   try {
     const { searchParams } = new URL(req.url);
     const subcategoryId = searchParams.get("categoryId") || undefined;
-    const colorId = searchParams.get("colorId") || undefined;
     const sizeId = searchParams.get("sizeId") || undefined;
     const isFeatured = searchParams.get("isFeatured");
 
