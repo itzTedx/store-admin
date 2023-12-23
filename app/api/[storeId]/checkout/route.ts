@@ -30,6 +30,9 @@ export async function POST(
         in: productIds,
       },
     },
+    include: {
+      images: true,
+    },
   });
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
@@ -43,11 +46,14 @@ export async function POST(
         tax_behavior: "exclusive",
         product_data: {
           name: product.name,
+          description: product.description,
+          images: product.images.map((image) => image.url),
           tax_code: "txcd_20090028",
         },
-        unit_amount: product.discountPrice
-          ? product.discountPrice.toNumber() * 100
-          : product.actualPrice.toNumber() * 100,
+
+        unit_amount: product.discountPrice.eq(0)
+          ? product.actualPrice.toNumber() * 100
+          : product.discountPrice.toNumber() * 100,
       },
     });
   });
@@ -75,6 +81,10 @@ export async function POST(
     phone_number_collection: {
       enabled: true,
     },
+    automatic_tax: {
+      enabled: true,
+    },
+
     success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
     cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     metadata: {
