@@ -85,7 +85,7 @@ export async function POST(
       enabled: true,
     },
 
-    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1&orderId=${order.id}`,
     cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     metadata: {
       orderId: order.id,

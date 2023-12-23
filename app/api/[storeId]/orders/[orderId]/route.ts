@@ -2,18 +2,22 @@ import { NextResponse } from "next/server";
 
 import prismadb from "@/lib/prismadb";
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: { orderId: string } }
+) {
   try {
-    const orders = await prismadb.order.findMany({
+    if (!params.orderId) {
+      return new NextResponse("Order ID Required", { status: 400 });
+    }
+    const orders = await prismadb.order.findUnique({
+      where: { id: params.orderId },
       include: {
         orderItems: {
           include: {
             product: true,
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
       },
     });
 
