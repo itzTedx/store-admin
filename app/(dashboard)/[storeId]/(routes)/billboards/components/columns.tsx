@@ -37,7 +37,7 @@ export const columns: ColumnDef<BillboardColumn>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Data",
+    header: "Date",
   },
   {
     id: "actions",
