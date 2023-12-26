@@ -1,11 +1,11 @@
-import Currency from "@/components/ui/currency"
-import { Heading } from "@/components/ui/heading"
-import prismadb from "@/lib/prismadb"
+import Currency from "@/components/ui/currency";
+import { Heading } from "@/components/ui/heading";
+import prismadb from "@/lib/prismadb";
 
 const OrderPage = async ({
   params,
 }: {
-  params: { orderId: string; storeId: string }
+  params: { orderId: string; storeId: string };
 }) => {
   const orders = await prismadb.order.findFirst({
     where: {
@@ -14,7 +14,7 @@ const OrderPage = async ({
     include: {
       orderItems: true,
     },
-  })
+  });
 
   const products = await prismadb.product.findMany({
     where: {
@@ -25,16 +25,16 @@ const OrderPage = async ({
       size: true,
       subcategory: true,
     },
-  })
-  const price = products.map((item) => item.discountPrice)
+  });
+  const price = products.map((item) => item.discountPrice);
 
   const totalPrice = price.reduce((total, item) => {
-    return total + Number(item)
-  }, 0)
+    return total + Number(item);
+  }, 0);
 
-  const taxPrice = totalPrice * 0.05
+  const taxPrice = totalPrice * 0.05;
 
-  const grandTotal = taxPrice + totalPrice
+  const grandTotal = taxPrice + totalPrice;
 
   return (
     <div className="flex-1 p-8 pt-6 space-y-4">
@@ -46,14 +46,14 @@ const OrderPage = async ({
           <span>{product.subcategory?.name}</span>
           <span>{product.quantity.name}</span>
           <span>{product.size.name}</span>
-          <div>{product.discountPrice.toString()}</div>
+          {/* <div>{product.discountPrice.toString()}</div> */}
         </div>
       ))}
       <Currency value={totalPrice} />
       <Currency value={taxPrice} />
       <Currency value={grandTotal} />
     </div>
-  )
-}
+  );
+};
 
-export default OrderPage
+export default OrderPage;
