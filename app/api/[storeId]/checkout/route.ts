@@ -38,6 +38,10 @@ export async function POST(
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
   products.forEach((product) => {
+    const discountPrice = product.discountPrice?.toNumber();
+
+    const price = discountPrice ? product.discountPrice : product.actualPrice;
+
     line_items.push({
       quantity: 1,
 
@@ -51,9 +55,12 @@ export async function POST(
           tax_code: "txcd_20090028",
         },
 
-        unit_amount: product.discountPrice.eq(0)
-          ? product.actualPrice.toNumber() * 100
-          : product.discountPrice.toNumber() * 100,
+        unit_amount: price
+          ? price.toNumber() * 100
+          : product.actualPrice.toNumber() * 100,
+        // unit_amount: product.discountPrice?.eq(0)
+        //   ? product.actualPrice.toNumber() * 100
+        //   : product.discountPrice.toNumber() * 100,
       },
     });
   });
