@@ -20,7 +20,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
       images: true,
     },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
   });
 
@@ -29,7 +29,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
   //    : item.actualPrice.toNumber();
 
   const formattedProducts: ProductColumn[] = products.map((item) => {
-    const discountPrice = item.discountPrice.toNumber();
+    const discountPrice = item.discountPrice?.toNumber();
 
     const price = discountPrice === 0 ? item.actualPrice : item.discountPrice;
     return {
@@ -37,12 +37,14 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
       name: item.name,
       isFeatured: item.isFeatured,
       isArchived: item.isArchived,
-      price: formatter.format(price.toNumber()),
+      price: formatter.format(
+        price ? price.toNumber() : item.actualPrice.toNumber()
+      ),
       subcategory: item.subcategory?.name,
       image: item.images[0].url,
       size: item.size.name,
       color: item.quantity.value,
-      createdAt: format(item.createdAt, "MMMM do, yyyy"),
+      createdAt: format(item.createdAt, "MM/dd/yyyy"),
     };
   });
 

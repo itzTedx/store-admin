@@ -40,16 +40,19 @@ model Billboard {
 }
 
 model Category {
-  id          String    @id @default(uuid())
-  slug        String    @unique
-  storeId     String
-  store       Store     @relation("StoreToCategory", fields: [storeId], references: [id])
-  billboardId String
-  billboard   Billboard @relation(fields: [billboardId], references: [id])
+  id              String    @id @default(uuid())
+  slug            String    @unique
+  storeId         String
+  store           Store     @relation("StoreToCategory", fields: [storeId], references: [id])
+  billboardId     String
+  billboard       Billboard @relation(fields: [billboardId], references: [id])
   // product       Product[]     @relation("CategoryToProduct")
-  name        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  name            String
+  metaTitle       String?
+  metaDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Define a relation to Subcategories
 
   subcategory Subcategory[] @relation("SubCategoryToCategory")
@@ -63,6 +66,9 @@ model Subcategory {
   id   String @id @default(uuid())
   name String
   slug String @unique
+
+  metaTitle       String?
+  metaDescription String?
 
   // Define a relation to Category
   categoryId  String
@@ -105,15 +111,18 @@ model Quantity {
 }
 
 model Product {
-  id            String  @id @default(uuid())
-  slug          String  @unique
+  id            String   @id @default(uuid())
+  slug          String   @unique
   storeId       String
-  store         Store   @relation("StoreToProduct", fields: [storeId], references: [id])
+  store         Store    @relation("StoreToProduct", fields: [storeId], references: [id])
   name          String
-  description   String  @default("")
+  description   String   @default("")
   actualPrice   Decimal
-  discountPrice Decimal
+  discountPrice Decimal?
   images        Image[]
+
+  metaTitle       String?
+  metaDescription String?
 
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)

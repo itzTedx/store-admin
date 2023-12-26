@@ -162,7 +162,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   //         isArchived: false,
   //       },
 
-  const subCat = categories.find((c) => c.subcategory);
+  const subCat = categories.flatMap((c) => c.subcategory);
 
   const onSubmit = async (data: ProductFormValues) => {
     console.log(data);
@@ -349,63 +349,65 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormField
                   control={form.control}
                   name="subcategoryId"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Category</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-[200px] justify-between",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? subCat?.subcategory.find(
-                                    (s) => s.id === field.value
-                                  )?.name
-                                : "Select category"}
+                  render={({ field }) => {
+                    console.log(field);
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Category</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "w-[200px] justify-between",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? subCat?.find((s) => s.id === field.value)
+                                      ?.name
+                                  : "Select category"}
 
-                              <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Search categories..." />
-                            <CommandEmpty>Nothing found.</CommandEmpty>
-                            <div className="overflow-y-scroll max-h-52">
-                              {categories.map((category) => (
-                                <div key={category.id}>
-                                  <CommandGroup heading={category.name}>
-                                    {category.subcategory.map((sub) => (
-                                      <CommandItem
-                                        key={sub.id}
-                                        value={sub.name}
-                                        onSelect={() => {
-                                          form.setValue(
-                                            "subcategoryId",
-                                            sub.id
-                                          );
-                                        }}
-                                      >
-                                        {sub.name}
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </div>
-                              ))}
-                            </div>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                                <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[200px] p-0">
+                            <Command>
+                              <CommandInput placeholder="Search categories..." />
+                              <CommandEmpty>Nothing found.</CommandEmpty>
+                              <div className="overflow-y-scroll max-h-52">
+                                {categories.map((category) => (
+                                  <div key={category.id}>
+                                    <CommandGroup heading={category.name}>
+                                      {category.subcategory.map((sub) => (
+                                        <CommandItem
+                                          key={sub.id}
+                                          value={sub.name}
+                                          onSelect={() => {
+                                            form.setValue(
+                                              "subcategoryId",
+                                              sub.id
+                                            );
+                                          }}
+                                        >
+                                          {sub.name}
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </div>
+                                ))}
+                              </div>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
                 {/* <FormField
                   control={form.control}
