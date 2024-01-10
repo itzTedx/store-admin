@@ -66,6 +66,10 @@ const formSchema = z.object({
   description: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
 
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  metaKeywords: z.string().optional(),
+
   actualPrice: z.coerce.number().min(1),
   discountPrice: z.coerce.number().optional(),
 
@@ -124,8 +128,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     : {
         name: "",
         images: [],
+        metaTitle: "",
+        metaDescription: "",
+        metaKeywords: "",
         actualPrice: 0,
-        discountPrice: 0,
+        discountPrice: "",
         subcategoryId: "",
         description: "",
         sizeId: "",
@@ -227,7 +234,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8"
+          className="container w-full space-y-8"
         >
           <FormField
             control={form.control}
@@ -568,14 +575,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   />
                   <div className="space-y-1 leading-none">
                     <FormLabel>Featured</FormLabel>
-                    <FormDescription>
+                    {/* <FormDescription>
                       This product will appear on the home page
-                    </FormDescription>
+                    </FormDescription> */}
                   </div>
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="isArchived"
               render={({ field }) => (
@@ -592,8 +599,98 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   </div>
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
+          <Heading title="SEO" description="Coming Soon" />
+          <FormField
+            control={form.control}
+            name="metaTitle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Page Title</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder="Product name"
+                    className="max-w-sm"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="metaDescription"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Page Description</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder="Product name"
+                    className="max-w-sm"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="metaKeywords"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Keywords</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder="Separate with the comma"
+                    className="max-w-sm"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Heading title="Product Overview" description="Coming Soon" />
+          <Textarea
+            rows={15}
+            disabled={loading}
+            placeholder="Separate with the comma"
+            className="max-w-sm"
+          />
+          {/* <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product Overview Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={15}
+                    disabled={loading}
+                    placeholder="Separate with the comma"
+                    className="max-w-sm"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <Heading title="Templates" description="Coming Soon" />
+          <Input type="file" />
+          <Heading title="FAQs" description="Coming Soon" />
+          <div className="space-y-3">
+            <Input placeholder="Question" />
+            <Input placeholder="Answer" />
+            <Button variant="outline">Add FAQ</Button>
+          </div>
+
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
           </Button>

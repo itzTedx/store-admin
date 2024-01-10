@@ -7,6 +7,7 @@ import CellAction from "./cell-action";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 export type ProductColumn = {
   id: string;
@@ -18,6 +19,7 @@ export type ProductColumn = {
   isFeatured: boolean;
   isArchived: boolean;
   createdAt: string;
+  storeId: string;
 };
 
 export const columns: ColumnDef<ProductColumn>[] = [
@@ -34,7 +36,14 @@ export const columns: ColumnDef<ProductColumn>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <h5 className="font-semibold">{row.original.name}</h5>,
+    cell: ({ row }) => (
+      <Link
+        href={`/${row.original.storeId}/products/${row.original.id}`}
+        className="font-semibold hover:text-lime-500"
+      >
+        {row.original.name}
+      </Link>
+    ),
   },
   {
     accessorKey: "image",

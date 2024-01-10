@@ -123,6 +123,7 @@ model Product {
 
   metaTitle       String?
   metaDescription String?
+  metaKeywords    String?
 
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)

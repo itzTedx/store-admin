@@ -45,6 +45,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
       size: item.size.name,
       color: item.quantity.value,
       createdAt: format(item.createdAt, "MM/dd/yyyy"),
+      storeId: params.storeId,
     };
   });
 
