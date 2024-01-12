@@ -116,13 +116,13 @@ model Product {
   storeId       String
   store         Store    @relation("StoreToProduct", fields: [storeId], references: [id])
   name          String
-  description   String   @default("")
+  description   String   @db.LongText
   actualPrice   Decimal
   discountPrice Decimal?
   images        Image[]
 
   metaTitle       String?
-  metaDescription String?
+  metaDescription String? @db.LongText
   metaKeywords    String?
 
   isFeatured Boolean @default(false)
