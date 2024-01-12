@@ -5,15 +5,7 @@ export async function GET(req: Request) {
   try {
     const category = await prismadb.subcategory.findMany({
       include: {
-        products: {
-          include: {
-            images: true,
-            category: true,
-            subcategory: true,
-            quantity: true,
-            size: true,
-          },
-        },
+        category: true,
       },
     });
     return NextResponse.json(category);
