@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const category = await prismadb.subcategory.findMany({
+    const category = await prismadb.subcategory.findFirst({
       include: {
         category: true,
       },
