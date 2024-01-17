@@ -104,6 +104,7 @@ export async function PATCH(
       where: {
         id: params.productId,
       },
+      // : discountPrice === 0 ? null : discountPrice
       data: {
         name,
         description,
