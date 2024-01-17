@@ -1,57 +1,18 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
-import { Fragment, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Image, Product, Quantity, Size } from "@prisma/client";
+import axios from "axios";
+import { Info, Trash } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Info, Trash } from "lucide-react";
-import {
-  Category,
-  Quantity,
-  Image,
-  Product,
-  Size,
-  Subcategory,
-} from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+import * as z from "zod";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ArrowUpDown as CaretSortIcon } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -59,7 +20,38 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Heading } from "@/components/ui/heading";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import ImageUpload from "@/components/ui/image-upload";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { ArrowUpDown as CaretSortIcon } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -122,7 +114,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     ? {
         ...initialData,
         actualPrice: parseFloat(String(initialData?.actualPrice)),
-        discountPrice: parseFloat(String(initialData?.discountPrice)),
+        // discountPrice: parseFloat(String(initialData?.discountPrice)),
         timeFrame: parseFloat(String(initialData?.timeFrame)),
       }
     : {
